@@ -110,111 +110,9 @@
             text-transform: uppercase;
             font-size: 0.75rem;
         }
-
-        /* Hikaye Modu Ekranı */
-        #narrative-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-
-        #dialogue-box {
-            background: #111;
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid #333;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 0 30px rgba(255,0,0,0.1);
-        }
-
-        #npcText {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .btn-option {
-            display: block;
-            width: 100%;
-            background: #222;
-            color: #fff;
-            border: 1px solid #444;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s, border-color 0.2s;
-        }
-
-        .btn-option:hover {
-            background: #aa0000;
-            border-color: #ff0000;
-        }
-
-        /* Jumpscare */
-        #jumpscare {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 2000;
-            display: none;
-        }
-        
-        #jumpscare-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: red;
-            font-size: 5rem;
-            font-weight: bold;
-            animation: shake 0.1s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(0px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(2px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(2px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
     </style>
 </head>
 <body>
-
-    <div id="jumpscare">
-        <div id="jumpscare-content">BOO!</div>
-    </div>
-
-    <div id="narrative-screen">
-        <div id="dialogue-box">
-            <div id="npcText">Yükleniyor...</div>
-            <div id="playerOptions"></div>
-        </div>
-    </div>
 
     <div class="container">
         <header>
@@ -229,7 +127,6 @@
     </div>
 
     <script>
-        // VERİ YAPILARI (allGames, chillGames, wishlist vb.)
         const allGames = [
           {
             name: 'DREAD FLATS',
@@ -491,14 +388,14 @@
           },
           {
             name: 'Magical Delicacy',
-            desc: 'Kendi dükkanında büyülü yemekler pişir and kasabaya teslim et.',
+            desc: 'Kendi dükkanında büyülü yemekler pişir ve kasabaya teslim et.',
             img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2231190/6406b69136197a10fb03307c3cca986f304eefbb/header.jpg?t=1769018053',
             time: '20-30 Saat',
             tags: ['üretim']
           },
           {
             name: 'Melatonin',
-            desc: 'Rüyalar ve gerçeğin birbirine karıştığı büyüleyici bir ritim oyunu.',
+            desc: 'Rüyalar ve gerçeğin birbirine karıştığı büyülü bir ritim oyunu.',
             img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1585220/header.jpg?t=1745444179',
             time: '2-3 Saat',
             tags: ['tıklama']
@@ -722,185 +619,18 @@
           }
         ];
 
-        window.chillTagsExcluded = new Set();
-
-        const wishlist = [
-          { name: 'Dispatch', steamId: '2592160' },
-          { name: 'AT DEAD OF NIGHT', steamId: '1450830' },
-          { name: 'Fears The Fathom', steamId: '1671340' },
-          { name: 'Luto', steamId: '1729740' },
-          { name: 'MARTHA IS DEAD', steamId: '515960' },
-          { name: 'the quarry', steamId: '1577120' },
-          { name: 'cronos', steamId: '2101960' },
-          { name: 'madison', steamId: '1670870' },
-          { name: 'high on life', steamId: '1583230' },
-          {
-            name: 'Date or Destiny Kiss or Miss',
-            steamId: '2127030',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2127030/f447ac90059534b1397b5de6fc2b004e5729d6cf/header.jpg?t=1751035600'
-          },
-          {
-            name: 'silent hill f',
-            steamId: '2947440',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2947440/7e5d923ac622bd1775ebc9b5d4b5b0a24bf5ed40/header.jpg?t=1770169624'
-          },
-          { name: 'Katana ZERO', steamId: '460950' },
-          {
-            name: 'Half-Life (Türkçe)',
-            steamId: '70',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/70/header.jpg?t=1745368462',
-            overlayIcon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Roundel_flag_of_Turkey.svg/500px-Roundel_flag_of_Turkey.svg.png'
-          },
-          {
-            name: 'Paranormal Tales',
-            steamId: '2193600',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2193600/header.jpg?t=1760022653'
-          },
-          {
-            name: 'Perceptum',
-            steamId: '4124340',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4124340/6a7fed1f457e84212554c79eaf3e90c25b056b0f/header.jpg?t=1770842900'
-          },
-          {
-            name: 'Goodnight Universe',
-            steamId: '2416100',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2416100/header.jpg?t=1763335395'
-          },
-          {
-            name: 'The Walking Dead',
-            steamId: '207610',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/207610/header.jpg?t=1729702559'
-          },
-          {
-            name: 'High On Life 2',
-            steamId: '2069250',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2069250/14a0a45da992ca33d59eb318b5cb9598c070e1c1/header.jpg?t=1771480792'
-          }
-        ];
-
-        const favoriteGames = [
-          'The Maid',
-          'Gas Station Case',
-          'Skull Hotel',
-          'No, I\'m not a Human',
-          'HELLMART',
-          'Last Report',
-          'We Used to Play Here',
-          'Agreee'
-        ];
-
-        let gameList = [...allGames];
-
-        // İNTERAKTİF DİYALOG SİSTEMİ
-        const dialogueTree = {
-          start: {
-            text: "Hey… yalnız mısın?",
-            choices: [
-              { label: "Evet, yalnızım.", next: 'alone' },
-              { label: "Hayır, yalnız değilim.", next: 'not_alone' }
-            ]
-          },
-          alone: {
-            text: "Şanslısın… Bu sıcakta kalabalık çekilmiyor. Ankara'nın sıcağı artık derimizi yakıyor. İnsan dışarıda beş dakika durunca nefesi kesiliyor.",
-            next: 'stream_q'
-          },
-          not_alone: {
-            text: "Öyle mi… İlginç. İçeriden sesler geliyor gibi.",
-            next: 'ankara_heat'
-          },
-          ankara_heat: {
-            text: "Bu sıcakta kalabalık çekilmiyor. Ankara'nın sıcağı artık derimizi yakıyor. İnsan dışarıda beş dakika durunca nefesi kesiliyor.",
-            next: 'stream_q'
-          },
-          stream_q: {
-            text: "Seni daha önce bir yerde görmüş gibiyim… Yayıncı mısın?",
-            choices: [
-              { label: "Evet, yayın yapıyorum.", next: 'stream_yes' },
-              { label: "Hayır.", next: 'stream_no' }
-            ]
-          },
-          stream_yes: {
-            text: "Vay be… Ben de eskiden yayın yapardım. Ama o günler çok geride kaldı.",
-            next: 'final'
-          },
-          stream_no: {
-            text: "Anladım… Eskiden ben de yayın yapardım. Ama o günler çok geride kaldı.",
-            next: 'final'
-          },
-          final: {
-            text: "Oyunları seçmende belki sana yardımcı olurum. Neden beni içeri almıyorsun?",
-            choices: [
-              { label: "İçeri gel.", next: 'enter' },
-              { label: "Git buradan.", next: 'reject' }
-            ]
-          },
-          enter: {
-            action: () => {
-              document.getElementById('narrative-screen').style.display = 'none';
-              document.getElementById('jumpscare').style.display = 'block';
-              setTimeout(() => {
-                alert('ÖLDÜN.');
-                location.reload();
-              }, 2000);
-            }
-          },
-          reject: {
-            action: () => {
-              document.getElementById('npcText').innerHTML = '"Pişman olacaksın..."';
-              document.getElementById('playerOptions').innerHTML = '';
-              setTimeout(() => {
-                document.getElementById('narrative-screen').style.display = 'none';
-                // Kütüphaneyi Başlat
-                renderLibrary();
-              }, 1500);
-            }
-          }
-        };
-
-        // Hikaye Modunu Başlatma Fonksiyonu
-        function startDialogue(nodeKey) {
-            const node = dialogueTree[nodeKey];
-            const textEl = document.getElementById('npcText');
-            const optionsEl = document.getElementById('playerOptions');
-            
-            textEl.innerHTML = node.text;
-            optionsEl.innerHTML = '';
-
-            if (node.action) {
-                node.action();
-                return;
-            }
-
-            if (node.choices) {
-                node.choices.forEach(choice => {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-option';
-                    btn.innerText = choice.label;
-                    btn.onclick = () => startDialogue(choice.next);
-                    optionsEl.appendChild(btn);
-                });
-            } else if (node.next) {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerText = "Devam Et";
-                btn.onclick = () => startDialogue(node.next);
-                optionsEl.appendChild(btn);
-            }
-        }
-
         // KÜTÜPHANEYİ EKRANA RENDER ETME FONKSİYONU
         function renderLibrary() {
             const container = document.getElementById('games-container');
             container.innerHTML = '';
 
-            // Hem Korku hem Chill oyunlarını birleştirip listeleme örneği
-            const combinedGames = [...gameList, ...chillGames];
+            // Tüm oyunları birleştirip listele
+            const combinedGames = [...allGames, ...chillGames];
 
             combinedGames.forEach(game => {
                 // Görsel Kontrolü ve Otomatik Yapılandırma
                 let imgSrc = game.image || game.img;
                 
-                // Eğer korku oyunlarında image boşsa ama steamId varsa otomatik ata
                 if (!imgSrc && game.steamId) {
                     imgSrc = `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg`;
                 } else if (!imgSrc) {
@@ -925,9 +655,9 @@
             });
         }
 
-        // Sayfa ilk yüklendiğinde hikaye modunu tetikle
+        // Sayfa yüklendiğinde doğrudan kütüphaneyi getir
         window.onload = () => {
-            startDialogue('start');
+            renderLibrary();
         };
     </script>
 </body>
