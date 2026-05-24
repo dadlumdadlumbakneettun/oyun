@@ -51,6 +51,7 @@
             justify-content: center;
             gap: 15px;
             margin-bottom: 35px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -94,6 +95,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .card:hover {
@@ -109,6 +111,38 @@
             border-bottom: 1px solid #1f1f1f;
         }
 
+        /* Kalp / Favori Butonu */
+        .favorite-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            z-index: 10;
+            user-select: none;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .favorite-btn.favorited {
+            color: #ff4757;
+            background: #fff;
+            border-color: #fff;
+        }
+
         .card-content {
             padding: 15px;
             display: flex;
@@ -121,6 +155,7 @@
             color: #fff;
             margin-bottom: 8px;
             font-weight: 600;
+            padding-right: 25px; /* Kalp butonuna çarpmaması için */
         }
 
         .card-desc {
@@ -157,13 +192,14 @@
     <div class="container">
         <header>
             <h1>Oyun Kütüphanesi</h1>
-            <p>Korku oyunları, chill deneyimler ve gelecek planları bir arada.</p>
+            <p>Korku oyunları, chill deneyimler ve favorilerin bir arada.</p>
         </header>
 
         <div class="tabs-container">
             <button class="tab-btn active" onclick="switchCategory('korku', this)">Korku Oyunları</button>
             <button class="tab-btn" onclick="switchCategory('chill', this)">Chill Oyunlar</button>
             <button class="tab-btn" onclick="switchCategory('wishlist', this)">İstek Listesi (Wishlist)</button>
+            <button class="tab-btn" onclick="switchCategory('favorites', this)">❤️ Favoriler</button>
         </div>
 
         <main>
@@ -230,7 +266,7 @@
           { name: 'PowerWash Sim', desc: 'Basınçlı suyun rahatlatıcı sesiyle en inatçı kirleri bile temizle.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1290000/header.jpg?t=1756929451', time: '50 Saat' },
           { name: 'PowerWash Sim 2', desc: 'Yeni mekanlar ve daha güçlü araçlarla temizlik keyfine devam et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2968420/91fea40a711c5a74cce1bb1a9e05c48a379f6aa0/header.jpg?t=1768317251', time: '40 Saat' },
           { name: 'MakeRoom', desc: 'Minyatür odalar tasarla, eşyaları yerleştir ve hayalindeki alanı yarat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2212670/228d1445433d45248e40abb0e402a6934199d569/header.jpg?t=1772889346', time: '2-3 Saat' },
-          { name: 'Birth', desc: 'Yalnızlığını gidermek için kemiklerden ve organlardan bir arkadaş inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1889040/header.jpg?t=1739362118', time: '2 Saat' },
+          { name: 'Birth', desc: 'Yalnızlığını gidermek için kemiklerden ve organlardan bir friend inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1889040/header.jpg?t=1739362118', time: '2 Saat' },
           { name: 'House Flipper', desc: 'Harabe haldeki evleri satın al, tamir et, baştan döşe ve kârla sat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/613100/6cee40fe293f0bab47534e78bcda64487902efc1/header.jpg?t=1775231659', time: '13-30 Saat' },
           { name: 'House Flipper 2', desc: 'Daha iyi grafikler ve mekaniklerle en iyi ev yenileme deneyimi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1190970/a8c4bf872d073e27e96c2179e19a5cd9971bfd2e/header.jpg?t=1775023916', time: '14-22 Saat' },
           { name: 'Viewfinder', desc: 'Fotoğrafları dünyaya yerleştirerek gerçekliği bük ve bulmacaları çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1382070/a69eb56f73446624325dec8a4fe74dc4ae09fb96/header.jpg?t=1764842475', time: '5 Saat' },
@@ -273,8 +309,35 @@
           { name: 'High On Life 2', steamId: '2069250', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2069250/14a0a45da992ca33d59eb318b5cb9598c070e1c1/header.jpg?t=1771480792' }
         ];
 
+        // HAFIZADAKİ FAVORİLERİ YÜKLE
+        let favoritedGames = JSON.parse(localStorage.getItem('libraryFavorites')) || [];
+        let currentTab = 'korku'; // O an aktif olan sekmeyi tutar
+
+        // KALBE TIKLANDIĞINDA ÇALIŞACAK FONKSİYON
+        function toggleFavorite(gameName, element) {
+            if (favoritedGames.includes(gameName)) {
+                // Listeden çıkar
+                favoritedGames = favoritedGames.filter(name => name !== gameName);
+                element.classList.remove('favorited');
+                element.innerHTML = '♡';
+            } else {
+                // Listeye ekle
+                favoritedGames.push(gameName);
+                element.classList.add('favorited');
+                element.innerHTML = '♥';
+            }
+            // Hafızaya kaydet
+            localStorage.setItem('libraryFavorites', JSON.stringify(favoritedGames));
+
+            // Eğer o an Favoriler sekmesindeysek kartı ekrandan anında düşürmek için tekrar render et
+            if (currentTab === 'favorites') {
+                renderCategory('favorites');
+            }
+        }
+
         // EKRANA OYUNLARI BASMA FONKSİYONU
         function renderCategory(category) {
+            currentTab = category;
             const container = document.getElementById('games-container');
             container.innerHTML = '';
 
@@ -282,6 +345,7 @@
 
             if (category === 'korku') {
                 targetedData = allGames.map(game => ({
+                    originalName: game.name,
                     name: game.name,
                     desc: game.type ? 'Tür: ' + game.type : 'Korku Oyunu',
                     img: game.image || (game.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg` : ''),
@@ -290,6 +354,7 @@
                 }));
             } else if (category === 'chill') {
                 targetedData = chillGames.map(game => ({
+                    originalName: game.name,
                     name: game.name,
                     desc: game.desc || 'Rahatlatıcı deneyim.',
                     img: game.img,
@@ -298,22 +363,63 @@
                 }));
             } else if (category === 'wishlist') {
                 targetedData = wishlist.map(game => ({
+                    originalName: game.name,
                     name: game.name,
                     desc: 'Gelecekte oynanacaklar listesinde.',
                     img: game.image || (game.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg` : ''),
                     badge: 'İstek Listesi',
                     meta: game.steamId ? 'Steam ID: ' + game.steamId : 'Planlanan'
                 }));
+            } else if (category === 'favorites') {
+                // Tüm listelerdeki kalplenmiş oyunları topla
+                const pool = [...allGames.map(g => ({...g, poolType: 'korku'})), ...chillGames.map(g => ({...g, poolType: 'chill'})), ...wishlist.map(g => ({...g, poolType: 'wishlist'}))];
+                const uniqueFavorites = pool.filter(game => favoritedGames.includes(game.name));
+                
+                // Favoriler listesi için uygun veri modeline çevir
+                targetedData = uniqueFavorites.map(game => {
+                    let desc = 'Favori oyun.';
+                    let img = '';
+                    let badge = 'Favori';
+                    let meta = 'Kütüphane';
+
+                    if (game.poolType === 'korku') {
+                        desc = game.type ? 'Tür: ' + game.type : 'Korku Oyunu';
+                        img = game.image || (game.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg` : '');
+                        badge = game.playtime || 'Süre Yok';
+                        meta = game.steamId ? 'Steam ID: ' + game.steamId : 'Statik';
+                    } else if (game.poolType === 'chill') {
+                        desc = game.desc || 'Rahatlatıcı deneyim.';
+                        img = game.img;
+                        badge = game.time || 'Süre Yok';
+                        meta = 'Chill Mode';
+                    } else if (game.poolType === 'wishlist') {
+                        desc = 'Gelecekte oynanacaklar listesinde.';
+                        img = game.image || (game.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg` : '');
+                        badge = 'İstek Listesi';
+                        meta = game.steamId ? 'Steam ID: ' + game.steamId : 'Planlanan';
+                    }
+
+                    return { originalName: game.name, name: game.name, desc, img, badge, meta };
+                });
+
+                if (targetedData.length === 0) {
+                    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; margin-top: 40px; font-size: 1.1rem;">Henüz hiçbir oyuna kalp bırakmadın.</div>`;
+                    return;
+                }
             }
 
             // Kartları Oluşturup Ekrana Ekleme
             targetedData.forEach(game => {
+                const isFav = favoritedGames.includes(game.originalName);
                 const card = document.createElement('div');
                 card.className = 'card';
 
                 const finalImg = game.img || 'https://via.placeholder.com/460x215?text=Resim+Yok';
 
                 card.innerHTML = `
+                    <div class="favorite-btn ${isFav ? 'favorited' : ''}" onclick="toggleFavorite('${game.originalName.replace(/'/g, "\\'")}', this)">
+                        ${isFav ? '♥' : '♡'}
+                    </div>
                     <img src="${finalImg}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/460x215?text=Görsel+Yüklenemedi'">
                     <div class="card-content">
                         <div class="card-title">${game.name}</div>
