@@ -149,6 +149,7 @@
             flex-direction: column;
             position: relative;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .game-card:hover {
@@ -206,6 +207,10 @@
             color: #90909a;
             line-height: 1.4;
             margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .game-meta {
@@ -281,7 +286,9 @@
             border: 1px solid #23252d;
             border-radius: 14px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 30px;
             position: relative;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
@@ -306,6 +313,8 @@
             margin-bottom: 20px;
             font-weight: 800;
             color: #fff;
+            border-bottom: 1px solid #23252d;
+            padding-bottom: 10px;
         }
 
         .form-group {
@@ -331,8 +340,66 @@
             font-size: 14px;
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
+            border-color: var(--accent-color);
+        }
+
+        /* İnteraktif Etiket Tasarımı */
+        .tags-manager {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background-color: #08080a;
+            padding: 10px;
+            border: 1px solid #23252d;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            min-height: 45px;
+        }
+
+        .tag-pill {
+            background-color: var(--card-bg);
+            border: 1px solid #2e303d;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-pill:hover {
+            background-color: #ff4757;
+            color: white;
+            border-color: #ff4757;
+        }
+
+        .add-tag-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-tag-box input {
+            flex-grow: 1;
+        }
+
+        .add-tag-btn {
+            background-color: #23252d;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 0 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .add-tag-btn:hover {
+            background-color: var(--accent-color);
+            color: #000;
             border-color: var(--accent-color);
         }
 
@@ -384,7 +451,7 @@
     <div class="modal-overlay" id="add-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h3>Yeni Oyun Ekle</h3>
+            <h3 id="modal-title">Yeni Oyun Ekle</h3>
             <form id="game-form" onsubmit="addGame(event)">
                 <div class="form-group">
                     <label>Eklenecek Kategori</label>
@@ -417,15 +484,63 @@
                     <label>Chill Etiketleri (Virgülle ayırın)</label>
                     <input type="text" id="form-tags" placeholder="Örn: üretim, bulmaca, ev yap">
                 </div>
-                <div class="form-group" id="desc-field" style="display: none;">
-                    <label>Kısa Açıklama (Chill Oyunlar İçin)</label>
-                    <textarea id="form-desc" rows="2" placeholder="Oyun hakkında kısa bilgi..."></textarea>
+                <div class="form-group">
+                    <label>Açıklama (Detayda görünür)</label>
+                    <textarea id="form-desc" rows="3" placeholder="Oyun hakkında detaylı bilgi..."></textarea>
                 </div>
                 <div class="form-group" style="display: flex; gap: 8px; align-items: center;">
                     <input type="checkbox" id="form-favorite" style="width: auto; cursor: pointer;">
                     <label for="form-favorite" style="margin-bottom: 0; cursor: pointer;">Favori olarak işaretle ❤️</label>
                 </div>
                 <button type="submit" class="submit-btn">Kütüphaneye Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Düzenleme ve Detay Modalı -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h3 id="edit-modal-title">Oyun Detayları & Düzenle</h3>
+            <form id="edit-game-form" onsubmit="saveEditedGame(event)">
+                <input type="hidden" id="edit-index">
+                <div class="form-group">
+                    <label>Oyun Adı</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Resim Linki (URL)</label>
+                    <input type="url" id="edit-image" placeholder="SteamID yoksa zorunludur">
+                </div>
+                <div class="form-group">
+                    <label>Steam ID</label>
+                    <input type="text" id="edit-steamid">
+                </div>
+                <div class="form-group">
+                    <label>Yayınlanma Yılı</label>
+                    <input type="number" id="edit-year">
+                </div>
+                <div class="form-group">
+                    <label>Oynanış Süresi</label>
+                    <input type="text" id="edit-playtime" required>
+                </div>
+                <div class="form-group">
+                    <label>Oyun Açıklaması</label>
+                    <textarea id="edit-desc" rows="4" placeholder="Oyun hakkında geniş açıklama..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Etiket Yönetimi (Silmek için etikete tıklayın)</label>
+                    <div class="tags-manager" id="edit-tags-container">
+                        <!-- Dinamik etiket pilleri gelecek -->
+                    </div>
+                    <div class="add-tag-box">
+                        <input type="text" id="new-tag-input" placeholder="Yeni etiket adı...">
+                        <button type="button" class="add-tag-btn" onclick="addNewTag()">Ekle</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Değişiklikleri Kaydet</button>
             </form>
         </div>
     </div>
@@ -470,7 +585,62 @@
           { name: 'Supernormal', type: 'korku', playtime: '1 saat 20 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2532430/header.jpg?t=1733831256' },
           { name: 'HorrorCore: Labirent ve Korku Havuzları', type: 'korku', playtime: '50 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3440410/header.jpg?t=1769786355' },
           { name: 'İblis 2', type: 'korku', playtime: '1 saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2205460/header.jpg?t=1699556680' },
-          { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' }
+          { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' },
+          
+          // Yeni Eklenen Korku Oyunları
+          {
+            name: 'Swaddle',
+            type: 'anomali, korku',
+            playtime: 'Belirtilmedi',
+            steamId: '4383370',
+            year: 2026,
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4383370/be3fb51fb0a1895c888a19811ee4cc56c355c209/header.jpg?t=1776956693',
+            desc: 'Siz, doğum servisinde stajyer bir doktorsunuz ve göreviniz her gece ikinci kattaki yeni doğan bebekleri gözetmek. Ancak çok aç bir şey bu çocuklara ulaşmak ve onları yemek istiyor. Hemen durdurun. Bebekleri kurtarın.'
+          },
+          {
+            name: 'The Guest II',
+            type: 'korku',
+            playtime: '1 saat',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971',
+            steamId: '4466990',
+            year: 2026,
+            desc: 'The Guest II, birinci şahıs bakış açısıyla oynanan psikolojik bir korku oyunudur.'
+          },
+          {
+            name: '恶意 (Malice)',
+            type: 'korku, demo',
+            playtime: '20 dakika',
+            image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210',
+            steamId: '4111260',
+            year: 2026
+          },
+          {
+            name: 'Overcome Your Fears - Caretaker',
+            type: 'korku',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3550490/cbd34ac4c5465cd866035baad4f75ec11293aea1/header.jpg?t=1778126229',
+            steamId: '3550490',
+            year: 2025,
+            desc: '19 yaşındaki Steve Jackson, arkadaşlarının evini beklerken küçük bir kasabada ürkütücü olaylarla karşılaşır. İstemsiz bir katılımcısı haline geldiğiniz olayların karanlık gizemine dalın. Gerçeği ortaya çıkarabilecek misiniz?'
+          },
+          {
+            name: 'The Baby In Yellow',
+            type: 'korku',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291340/header.jpg?t=1763401770',
+            steamId: '2291340',
+            year: 2023,
+            desc: 'Yeni bir bebek bakıcılığı işin var ve işler garip bir hal alıyor. Onu besle, yatmadan önce ona bir hikaye oku ve rüyalarına düşmemeye çalış. Kontrolü ne kadar süre elinde tutabilirsin?'
+          },
+          {
+            name: 'Escape from Yandere',
+            type: 'korku, bulmaca',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4081840/357a2f59ec1939f8d0025c0121e86b0f3dabf12c/header.jpg?t=1771446146',
+            steamId: '4081840',
+            year: 2026,
+            desc: 'Yandera sizi evinize kilitledi ve sizden aşk ilanı istiyor. Onunla kalabilir veya kaçmaya çalışabilirsiniz. Evi keşfedin, ama dikkatli olun, Yandera sizi öldürebilir.'
+          }
         ];
 
         let chillGames = [
@@ -507,7 +677,18 @@
           { name: 'Level Devil', desc: 'Seni kandırmak için tasarlanmış sinir bozucu ama bağımlılık yapan platform oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3242750/header.jpg?t=1774446792', time: '3-6 Saat', tags: ['bulmaca'] },
           { name: 'FIGHT-QUEST', desc: 'Dövüş ve macera dolu bu demoda kılıcını kaldır, düşmanlarını alt et.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3685570/c8efdb9c6a5ff7c34818bd649c9d263140b66155/header.jpg?t=1773699437', time: 'Demo', tags: ['demo', 'macera'] },
           { name: 'White Knuckle', desc: 'Çöken bir dünyada duvarlara tırmanarak hayatta kalmaya çalıştığın yüksek tempolu bir ko-op oyun.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3195790/header.jpg?t=1767974773', time: '1 saat - sonsuz', tags: ['macera'] },
-          { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] }
+          { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] },
+          
+          // Yeni Eklenen Chill Oyunlar
+          {
+            name: '60 Seconds!',
+            desc: 'Ailenle nükleer sığınakta hayatta kalma mücadelesi verdiğin eğlenceli ve heyecanlı bir yönetim simülasyonu.',
+            img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/368360/header.jpg?t=1760090040',
+            time: 'Belirtilmedi',
+            steamId: '368360',
+            year: 2015,
+            tags: ['chill', 'hayatta kalma']
+          }
         ];
 
         let favoriteGames = [
@@ -515,6 +696,7 @@
         ];
 
         let currentTab = 'horror';
+        let activeEditTags = []; // Düzenlenmekte olan oyunun etiketleri
 
         // LocalStorage üzerinde verileri kalıcı kılmak
         if (localStorage.getItem('lib_allGames')) {
@@ -570,10 +752,11 @@
 
                 const card = document.createElement('div');
                 card.className = 'game-card';
+                card.setAttribute('onclick', `openEditModal(${index}, '${currentTab}')`);
 
                 card.innerHTML = `
                     <div class="image-wrapper">
-                        <div class="heart-badge" onclick="toggleFavorite('${game.name.replace(/'/g, "\\'")}')">
+                        <div class="heart-badge" onclick="toggleFavorite('${game.name.replace(/'/g, "\\'")}', event)">
                             ${isFavorite ? '❤️' : '🤍'}
                         </div>
                         ${gameImg ? `<img src="${gameImg}" class="game-img" alt="${game.name}" onerror="this.src='https://via.placeholder.com/460x215?text=Görsel+Bulunamadı'">` : `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#555; font-size:13px; font-style:italic;">Görsel Tanımlı Değil</div>`}
@@ -589,10 +772,10 @@
                         </div>
                         <div>
                             <div class="tag-container">
-                                ${tagsArray.map(tag => `<span class="tag ${getTagClass(tag)}">${tag}</span>`).join('')}
+                                ${tagsArray.filter(t => t).map(tag => `<span class="tag ${getTagClass(tag)}">${tag}</span>`).join('')}
                             </div>
                             <div class="card-actions">
-                                <button class="delete-btn" onclick="deleteGame(${index})">Sil 🗑️</button>
+                                <button class="delete-btn" onclick="deleteGame(${index}, event)">Sil 🗑️</button>
                             </div>
                         </div>
                     </div>
@@ -616,7 +799,8 @@
         }
 
         // Kalp durumunu değiştirme
-        function toggleFavorite(gameName) {
+        function toggleFavorite(gameName, event) {
+            if (event) event.stopPropagation(); // Kart düzenleme modalının açılmasını önle
             const index = favoriteGames.findIndex(fav => fav.toLowerCase() === gameName.toLowerCase());
             if (index > -1) {
                 favoriteGames.splice(index, 1);
@@ -627,7 +811,7 @@
             renderGames();
         }
 
-        // Modalı açma ve kapama
+        // Oyun Ekleme Modalı Kontrolleri
         function openModal() {
             document.getElementById('add-modal').style.display = 'flex';
         }
@@ -638,27 +822,132 @@
             toggleFormTagsField();
         }
 
-        function toggleFormTagsField() {
-            const category = document.getElementById('form-category').value;
-            const tagsField = document.getElementById('tags-field');
-            const descField = document.getElementById('desc-field');
-            if (category === 'chill') {
-                tagsField.style.display = 'block';
-                descField.style.display = 'block';
+        // Oyun Düzenleme / Detay Modalı Kontrolleri
+        function openEditModal(index, tab) {
+            const list = (tab === 'horror') ? allGames : chillGames;
+            const game = list[index];
+
+            document.getElementById('edit-index').value = index;
+            document.getElementById('edit-name').value = game.name || '';
+            document.getElementById('edit-image').value = game.image || game.img || '';
+            document.getElementById('edit-steamid').value = game.steamId || '';
+            document.getElementById('edit-year').value = game.year || '';
+            document.getElementById('edit-playtime').value = game.playtime || game.time || '';
+            document.getElementById('edit-desc').value = game.desc || '';
+
+            // Etiketleri parse et
+            if (game.type) {
+                activeEditTags = game.type.split(',').map(t => t.trim()).filter(t => t);
+            } else if (game.tags) {
+                activeEditTags = [...game.tags];
             } else {
-                tagsField.style.display = 'none';
-                descField.style.display = 'none';
+                activeEditTags = [];
+            }
+
+            renderEditTags();
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            document.getElementById('edit-game-form').reset();
+        }
+
+        // Düzenleme modalında etiketleri listeleme
+        function renderEditTags() {
+            const container = document.getElementById('edit-tags-container');
+            container.innerHTML = '';
+            
+            if (activeEditTags.length === 0) {
+                container.innerHTML = `<span style="color: #555; font-size: 13px; font-style: italic;">Henüz etiket yok.</span>`;
+                return;
+            }
+
+            activeEditTags.forEach((tag, index) => {
+                const pill = document.createElement('span');
+                pill.className = 'tag-pill';
+                pill.innerHTML = `${tag.toUpperCase()} <span style="color: #ff4757; font-weight: bold; margin-left: 5px;">&times;</span>`;
+                pill.setAttribute('onclick', `removeTag(${index})`);
+                container.appendChild(pill);
+            });
+        }
+
+        // Etiket Silme
+        function removeTag(index) {
+            activeEditTags.splice(index, 1);
+            renderEditTags();
+        }
+
+        // Yeni Etiket Ekleme
+        function addNewTag() {
+            const input = document.getElementById('new-tag-input');
+            const val = input.value.trim().toLowerCase();
+            if (val && !activeEditTags.includes(val)) {
+                activeEditTags.push(val);
+                renderEditTags();
+                input.value = '';
             }
         }
 
-        // Formdan yeni oyun ekleme
+        // Düzenlenmiş Oyunu Kaydetme
+        function saveEditedGame(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('edit-index').value);
+            const name = document.getElementById('edit-name').value.trim();
+            const image = document.getElementById('edit-image').value.trim();
+            const steamId = document.getElementById('edit-steamid').value.trim();
+            const year = parseInt(document.getElementById('edit-year').value) || '';
+            const playtime = document.getElementById('edit-playtime').value.trim();
+            const desc = document.getElementById('edit-desc').value.trim();
+
+            const list = (currentTab === 'horror') ? allGames : chillGames;
+            const originalGame = list[index];
+
+            // Favori listesindeki eski adını güncelle
+            const favIndex = favoriteGames.findIndex(f => f.toLowerCase() === originalGame.name.toLowerCase());
+            if (favIndex > -1) {
+                favoriteGames[favIndex] = name;
+            }
+
+            // Değerleri güncelle
+            originalGame.name = name;
+            originalGame.steamId = steamId;
+            originalGame.year = year;
+            originalGame.desc = desc;
+
+            if (currentTab === 'horror') {
+                originalGame.image = image;
+                originalGame.playtime = playtime;
+                originalGame.type = activeEditTags.join(', ');
+            } else {
+                originalGame.img = image;
+                originalGame.time = playtime;
+                originalGame.tags = [...activeEditTags];
+            }
+
+            saveStateToLocal();
+            closeEditModal();
+            renderGames();
+        }
+
+        function toggleFormTagsField() {
+            const category = document.getElementById('form-category').value;
+            const tagsField = document.getElementById('tags-field');
+            if (category === 'chill') {
+                tagsField.style.display = 'block';
+            } else {
+                tagsField.style.display = 'none';
+            }
+        }
+
+        // Formdan sıfırdan yeni oyun ekleme
         function addGame(e) {
             e.preventDefault();
             const category = document.getElementById('form-category').value;
             const name = document.getElementById('form-name').value.trim();
             const image = document.getElementById('form-image').value.trim();
             const steamId = document.getElementById('form-steamid').value.trim();
-            const year = document.getElementById('form-year').value;
+            const year = parseInt(document.getElementById('form-year').value) || '';
             const playtime = document.getElementById('form-playtime').value.trim();
             const tags = document.getElementById('form-tags').value.trim();
             const desc = document.getElementById('form-desc').value.trim();
@@ -674,7 +963,8 @@
                 const newHorror = {
                     name: name,
                     type: tags ? tags : 'Korku',
-                    playtime: playtime
+                    playtime: playtime,
+                    desc: desc
                 };
                 if (steamId) newHorror.steamId = steamId;
                 if (image) newHorror.image = image;
@@ -699,7 +989,8 @@
         }
 
         // Oyun silme
-        function deleteGame(index) {
+        function deleteGame(index, event) {
+            if (event) event.stopPropagation(); // Kart tıklama (düzenleme) eventini engelle
             if (confirm("Bu oyunu listeden kalıcı olarak silmek istiyor musun?")) {
                 if (currentTab === 'horror') {
                     allGames.splice(index, 1);
