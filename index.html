@@ -3,725 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oyun Kütüphanesi & Yönetimi</title>
+    <title>Oyun Kütüphanesi</title>
     <style>
-        /* Modern ve Minimalist Koyu Tema */
+        :root {
+            --bg-color: #08080a;
+            --card-bg: #121318;
+            --text-color: #e0e0e0;
+            --accent-color: #ff3333; /* Korku için kırmızı */
+            --border-color: #1f2026;
+            --accent-glow: rgba(255, 51, 51, 0.15);
+        }
+
+        body.chill-active {
+            --bg-color: #0f0914;
+            --card-bg: #1a1222;
+            --text-color: #f0e6f2;
+            --accent-color: #ff75a0; /* Chill için tatlı pembe */
+            --border-color: #2e1e3b;
+            --accent-glow: rgba(255, 117, 160, 0.15);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #000000;
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.5s ease;
+            min-height: 100vh;
+            padding-bottom: 60px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+        /* Header Tasarımı */
         header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 25px;
-            background: #0a0a0a;
-            border: 1px solid #111;
-            border-radius: 12px;
-            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.5s;
         }
 
-        header h1 {
-            color: #fff;
-            font-size: 2.3rem;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        /* Oyun Ekleme Modalı ve Butonu */
-        .add-game-trigger {
-            position: absolute;
-            right: 20px;
-            top: 30px;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 10px 18px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .add-game-trigger:hover {
-            background: #ccc;
-            transform: translateY(-2px);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 2000;
-            justify-content: center;
+        .left-header {
+            display: flex;
+            gap: 20px;
             align-items: center;
         }
 
-        .modal-content {
-            background: #0c0c0c;
-            border: 1px solid #222;
-            padding: 30px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            right: 20px; top: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #555;
-        }
-
-        .modal-close:hover { color: #fff; }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.85rem;
-            color: #aaa;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            background: #141414;
-            border: 1px solid #252525;
-            color: #fff;
-            border-radius: 6px;
-        }
-
-        .form-btn {
-            width: 100%;
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 12px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Kategoriler (Tab Alanı) */
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
         .tab-btn {
-            background-color: #0c0c0c;
-            color: #888;
-            border: 1px solid #1a1a1a;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
+            font-size: 26px;
+            font-weight: 800;
+            background: none;
+            border: none;
+            color: #55555d;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 1px;
         }
 
         .tab-btn:hover {
-            color: #fff;
-            border-color: #444;
+            color: #8c8c96;
         }
 
         .tab-btn.active {
-            background-color: #fff;
-            color: #000;
-            border-color: #fff;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* Etiketler (Chill Alanı Filtresi) */
-        .tags-container {
-            display: none;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            background: #050505;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #111;
+        .right-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .tag-pill {
-            background: #161616;
-            color: #aaa;
-            padding: 6px 14px;
-            font-size: 0.8rem;
-            border-radius: 20px;
+        .action-btn {
+            background: #181920;
+            color: #b0b0bc;
+            border: 1px solid #282932;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            border: 1px solid transparent;
+            font-weight: 600;
+            font-size: 13px;
             transition: all 0.2s;
         }
 
-        .tag-pill.excluded {
-            background: #2a1114;
-            color: #ff4757;
-            border-color: #ff4757;
-            text-decoration: line-through;
+        .action-btn:hover {
+            border-color: var(--accent-color);
+            color: #fff;
+            background: #1f202a;
         }
 
-        /* Oyun Grid Yapısı */
-        .grid {
+        .add-btn {
+            font-size: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        /* Grid Yapısı */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+        }
+
+        .game-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 30px;
         }
 
-        .card {
-            background: #0c0c0c;
-            border: 1px solid #161616;
-            border-radius: 10px;
+        /* Kart Tasarımı */
+        .game-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.3s ease, border-color 0.3s ease;
             display: flex;
             flex-direction: column;
             position: relative;
+            transition: all 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: #333;
+        .game-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
         }
 
-        .image-container {
+        .image-wrapper {
             position: relative;
             width: 100%;
-            height: 160px;
-            background: #141414;
+            height: 155px;
+            background-color: #050505;
         }
 
-        .card img.main-img {
+        .game-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        /* Türk Bayrağı / Özel Simge */
-        .overlay-icon {
+        .heart-badge {
             position: absolute;
-            bottom: 8px;
-            left: 8px;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            z-index: 5;
-            object-fit: cover;
-        }
-
-        /* Kalp Butonu */
-        .favorite-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
             cursor: pointer;
-            font-size: 1.3rem;
-            transition: all 0.2s ease;
-            z-index: 10;
+            transition: transform 0.2s;
+            z-index: 5;
             user-select: none;
         }
 
-        .favorite-btn:hover {
-            transform: scale(1.15);
-        }
-
-        .favorite-btn.favorited {
-            color: #ff4757;
-            background: #fff;
-            border-color: #fff;
+        .heart-badge:hover {
+            transform: scale(1.2);
         }
 
         .card-content {
-            padding: 15px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            justify-content: space-between;
         }
 
-        .card-title {
-            font-size: 1.15rem;
+        .game-title {
+            font-size: 18px;
+            font-weight: 700;
             color: #fff;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 6px;
         }
 
-        .card-desc {
-            font-size: 0.88rem;
-            color: #888;
-            margin-bottom: 15px;
+        .game-desc {
+            font-size: 13px;
+            color: #90909a;
             line-height: 1.4;
-            flex-grow: 1;
+            margin-bottom: 12px;
         }
 
-        .card-meta {
+        .game-meta {
+            font-size: 12px;
+            color: #6a6a75;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Renkli Etiket Sınıfları */
+        .tag-anomali { background-color: #8e44ad; color: #fff; }
+        .tag-korku { background-color: #962d2d; color: #fff; }
+        .tag-bulmaca { background-color: #2980b9; color: #fff; }
+        .tag-japon { background-color: #d35400; color: #fff; }
+        .tag-üretim { background-color: #27ae60; color: #fff; }
+        .tag-tıklama { background-color: #16a085; color: #fff; }
+        .tag-ev { background-color: #f39c12; color: #000; }
+        .tag-default { background-color: #2a2c35; color: #b0b0b0; }
+
+        .card-actions {
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
-            color: #555;
-            border-top: 1px solid #161616;
-            padding-top: 10px;
         }
 
-        .badge {
-            background: #161616;
-            color: #ccc;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.72rem;
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #6a6a75;
+            font-size: 12px;
             font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
         }
 
-        /* Arka Planda Görünmeyen Narrative Alanları (Hata Vermemesi İçin) */
-        #narrative-screen, #jumpscare { display: none; }
+        .delete-btn:hover {
+            color: #ff4757;
+        }
+
+        /* Modal / Form Tasarımı */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background-color: #101114;
+            border: 1px solid #23252d;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+
+        .modal h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #80808a;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #08080a;
+            border: 1px solid #23252d;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: #000;
+            font-weight: 700;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: filter 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .hidden-file {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div id="narrative-screen">
-        <div id="npcText"></div>
-        <div id="playerOptions"></div>
-    </div>
-    <div id="jumpscare"></div>
-
-    <div class="container">
-        <header>
-            <h1>Oyun Kütüphanesi</h1>
-            <p>Oyun listeleri, etiket filtreleri ve favori yönetim paneli.</p>
-            <button class="add-game-trigger" onclick="toggleModal(true)">➕ Yeni Oyun Ekle</button>
-        </header>
-
-        <div class="tabs-container">
-            <button class="tab-btn active" onclick="switchCategory('korku', this)">Korku Oyunları</button>
-            <button class="tab-btn" onclick="switchCategory('chill', this)">Chill Oyunlar</button>
-            <button class="tab-btn" onclick="switchCategory('wishlist', this)">İstek Listesi (Wishlist)</button>
-            <button class="tab-btn" onclick="switchCategory('favorites', this)">❤️ Favoriler</button>
+    <!-- Header / Navigasyon Bölümü -->
+    <header>
+        <div class="left-header">
+            <button class="tab-btn active" id="tab-horror" onclick="switchTab('horror')">KORKU</button>
+            <button class="tab-btn" id="tab-chill" onclick="switchTab('chill')">CHILL</button>
         </div>
+        <div class="right-header">
+            <button class="action-btn" onclick="exportToJS()">JS Dışa Aktar</button>
+            <button class="action-btn" onclick="exportToManifest()">Manifest Dışa Aktar</button>
+            <button class="action-btn" onclick="document.getElementById('import-file-input').click()">İçe Aktar</button>
+            <input type="file" id="import-file-input" class="hidden-file" accept=".json,.txt,.js" onchange="importData(event)">
+            <button class="add-btn" onclick="openModal()">+</button>
+        </div>
+    </header>
 
-        <div class="tags-container" id="tags-filter-bar">
-            </div>
-
-        <main>
-            <div class="grid" id="games-container">
-                </div>
-        </main>
+    <!-- Oyun Kataloğu Alanı -->
+    <div class="container">
+        <div class="game-grid" id="game-container"></div>
     </div>
 
-    <div class="modal" id="addGameModal">
+    <!-- Yeni Oyun Ekleme Modalı -->
+    <div class="modal-overlay" id="add-modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="toggleModal(false)">&times;</span>
-            <h3 style="margin-bottom: 20px; color:#fff;">Kütüphaneye Oyun Ekle</h3>
-            
-            <div class="form-group">
-                <label>Oyun Adı</label>
-                <input type="text" id="formName" required placeholder="Örn: Half-Life 3">
-            </div>
-            
-            <div class="form-group">
-                <label>Kategori</label>
-                <select id="formCategory" onchange="handleFormCategoryChange()">
-                    <option value="korku">Korku Oyunu</option>
-                    <option value="chill">Chill Oyun</option>
-                    <option value="wishlist">İstek Listesi (Wishlist)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Açıklama / Tür</label>
-                <input type="text" id="formDesc" placeholder="Örn: Psikolojik, Hayatta Kalma veya Oyun Özeti">
-            </div>
-
-            <div class="form-group">
-                <label>Oynanış Süresi / Zaman</label>
-                <input type="text" id="formTime" placeholder="Örn: 2 saat veya 10-15 Saat">
-            </div>
-
-            <div class="form-group">
-                <label>Görsel URL (Boş bırakılırsa Steam ID kullanılır)</label>
-                <input type="text" id="formImage" placeholder="https://... /header.jpg">
-            </div>
-
-            <div class="form-group">
-                <label>Steam ID (Opsiyonel)</label>
-                <input type="text" id="formSteamId" placeholder="Örn: 70">
-            </div>
-
-            <div class="form-group" id="formTagsGroup" style="display:none;">
-                <label>Chill Etiketleri (Virgülle ayırın)</label>
-                <input type="text" id="formTags" placeholder="Örn: üretim, tıklama, ev yap">
-            </div>
-
-            <button class="form-btn" onclick="saveNewGame()">Kütüphaneye Kaydet</button>
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3>Yeni Oyun Ekle</h3>
+            <form id="game-form" onsubmit="addGame(event)">
+                <div class="form-group">
+                    <label>Eklenecek Kategori</label>
+                    <select id="form-category" onchange="toggleFormTagsField()" required>
+                        <option value="horror">Korku (Horror)</option>
+                        <option value="chill">Chill</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Oyun Adı</label>
+                    <input type="text" id="form-name" required placeholder="Örn: THE EXIT 9">
+                </div>
+                <div class="form-group">
+                    <label>Resim Linki (URL)</label>
+                    <input type="url" id="form-image" placeholder="Boş bırakılırsa Steam ID kullanılır">
+                </div>
+                <div class="form-group">
+                    <label>Steam ID (Opsiyonel)</label>
+                    <input type="text" id="form-steamid" placeholder="Resim ve kütüphane bağlamı için">
+                </div>
+                <div class="form-group">
+                    <label>Yayınlanma Yılı (Opsiyonel)</label>
+                    <input type="number" id="form-year" placeholder="Örn: 2026">
+                </div>
+                <div class="form-group">
+                    <label>Oynanış Süresi</label>
+                    <input type="text" id="form-playtime" placeholder="Örn: 2 saat veya 20-30 Saat" required>
+                </div>
+                <div class="form-group" id="tags-field" style="display: none;">
+                    <label>Chill Etiketleri (Virgülle ayırın)</label>
+                    <input type="text" id="form-tags" placeholder="Örn: üretim, bulmaca, ev yap">
+                </div>
+                <div class="form-group" id="desc-field" style="display: none;">
+                    <label>Kısa Açıklama (Chill Oyunlar İçin)</label>
+                    <textarea id="form-desc" rows="2" placeholder="Oyun hakkında kısa bilgi..."></textarea>
+                </div>
+                <div class="form-group" style="display: flex; gap: 8px; align-items: center;">
+                    <input type="checkbox" id="form-favorite" style="width: auto; cursor: pointer;">
+                    <label for="form-favorite" style="margin-bottom: 0; cursor: pointer;">Favori olarak işaretle ❤️</label>
+                </div>
+                <button type="submit" class="submit-btn">Kütüphaneye Ekle</button>
+            </form>
         </div>
     </div>
 
     <script>
-        // DATA DOSYASINDAKİ TÜM VERİ YAPILARI (EKSİKSİZ) [cite: 1, 12, 29]
-        const defaultAllGames = [
-          { name: 'DREAD FLATS', type: 'korku, bulmaca', playtime: '2 saat', steamId: '3114900' }, [cite: 1]
-          { name: 'CLINK', type: 'Korku', playtime: '1 saat', steamId: '3494130', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3494130/079f1a0c06f0186e132c815f3353543514a3cc44/header.jpg?t=1749669037' }, [cite: 1]
-          { name: 'THE KIDNAP', type: 'gerilim, japon korku', playtime: '1 saat', steamId: '2593900' }, [cite: 1]
-          { name: 'THE EXIT 8', type: 'anomali', playtime: '30 dakika', steamId: '2653790' }, [cite: 1, 2]
-          { name: 'SHINKANSE 0', type: 'zor anomali', playtime: '1-2 saat', steamId: '2793370' }, [cite: 2]
-          { name: 'WE HARVEST SHADOWS', type: 'indie demo korku', playtime: '2 saat', steamId: '1559720' }, [cite: 2]
-          { name: 'THE STAIRWAY 7', type: 'anomali, kedy', playtime: '1 saat', steamId: '2911820' }, [cite: 2]
-          { name: 'BROKENLORE: DON\'T WATCH', type: 'korku', playtime: '1 saat', steamId: '2351330' }, [cite: 3]
-          { name: 'Platform 8', type: 'anomali', playtime: '20 dakika', steamId: '2903560' }, [cite: 3]
-          { name: 'The Closing Shift', type: 'japon korku', playtime: '1-2 saat', steamId: '1843090' }, [cite: 3]
-          { name: 'PARASOCIAL', type: 'japon korku', playtime: '1-1,5 saat', steamId: '2314720' }, [cite: 3, 4]
-          { name: 'THE CONVENIENCE STORE', type: 'japon korku', playtime: '1 saat', steamId: '1228520' }, [cite: 4]
-          { name: 'THE KARAOKE', type: 'japon korku', playtime: '1 saat', steamId: '2200190' }, [cite: 4]
-          { name: 'Skull Hotel', type: 'anomali', playtime: '1 Saat', steamId: '3739730', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3739730/c3f9088f09dabf6f07eb3595b6687b680a1cacbf/header.jpg?t=1761749116' }, [cite: 4]
-          { name: 'No, I\'m not a Human', type: 'gizem', playtime: '2,50 saat - sonsuz saat', steamId: '3180070' }, [cite: 4, 5]
-          { name: 'HELLMART', type: 'korku', playtime: '3 saat', steamId: '3762550', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3762550/8d5561f21bb46dd76d7a8b863c901d6a05e19204/header.jpg?t=1770292620' }, [cite: 5]
-          { name: 'Last Report', type: 'korku, psikolojik', playtime: '1.50 - 2.50 saat', steamId: '3209480' }, [cite: 5]
-          { name: 'We Used to Play Here', type: 'korku', playtime: '1.5 saat', steamId: '3998890', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3998890/13a794115c7891c71f83393c21e2ebc53df5f25b/header.jpg?t=1766131439' }, [cite: 5, 6]
-          { name: 'Toilet 8', type: 'anomali', playtime: '40 dakika', steamId: '4142980', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4142980/c9b71c6acd939c39044b3c56e51b0f8ab12e93bb/header.jpg?t=1772537552' }, [cite: 6]
-          { name: "Don't Play This", type: 'korku', playtime: '1 saat', steamId: '3319120', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3319120/07d1ccb485d61cb593b42e8932fecf03e18f4a9c/header.jpg?t=1776353186' }, [cite: 6]
-          { name: 'The Guest 2', type: 'korku', playtime: '1 saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971' }, [cite: 6, 7]
-          { name: 'The Strange Lights', type: 'korku', playtime: '40 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3823950/6e090fcb7c2b15dbbdbdc2d78fff00ef053b0032/header.jpg?t=1770474068' }, [cite: 7]
-          { name: 'The Last Letter', type: 'korku', playtime: '50 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4508710/f34472f838adc1f0c5f909f98835d5c07e6bcad9/header.jpg?t=1776955886' }, [cite: 7]
-          { name: 'Empty Gauge', type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3998790/231429f45e9511324cd000a7ad5485b54d8014b4/header.jpg?t=1776617740' }, [cite: 7]
-          { name: 'Dread Neighboard', type: 'korku, demo', playtime: '20 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210' }, [cite: 7, 8]
-          { name: "DON'T OPEN", type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4498870/ea34ad27ebbf448fddea528f9581b4f1eb008da4/header.jpg?t=1773904304' }, [cite: 8]
-          { name: 'Tostchu', type: 'korku', playtime: '2.5-3 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2221500/header.jpg?t=1730124471' }, [cite: 8]
-          { name: 'Halu - The Fracture', type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3893210/e8c64e4126aa7892741ee9c8de936b3eadb13b33/header.jpg?t=1759002158' }, [cite: 8]
-          { name: 'The Tall Man Tapes', type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3369940/1db13731da19cd14a71b6a1c1fc41abf6b496b01/header.jpg?t=1771883392' }, [cite: 8, 9]
-          { name: 'Let Me In', type: 'korku, demo', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4224400/68a891560fbdbc57cd0f2ff21ed2fd1ba8d7cdcb/header.jpg?t=1776778481' }, [cite: 9]
-          { name: 'Lair of Torment', type: 'korku', playtime: '30 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2508210/header.jpg?t=1776012905' }, [cite: 9]
-          { name: 'Make Good Choices', type: 'anomali', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3410310/header.jpg?t=1737678394' }, [cite: 9, 10]
-          { name: "Willie's Nightfall", type: 'korku', playtime: '40 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3198320/header.jpg?t=1737268713' }, [cite: 10]
-          { name: '[Nightmare Files] Clap Clap', type: 'korku', playtime: '25 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2933290/header.jpg?t=1765139513' }, [cite: 10]
-          { name: 'Supernormal', type: 'korku', playtime: '1 saat 20 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2532430/header.jpg?t=1733831256' }, [cite: 10]
-          { name: 'HorrorCore: Labirent ve Korku Havuzları', type: 'korku', playtime: '50 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3440410/header.jpg?t=1769786355' }, [cite: 10, 11]
-          { name: 'İblis 2', type: 'korku', playtime: '1 saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2205460/header.jpg?t=1699556680' }, [cite: 11]
-          { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' } [cite: 11]
+        // Orijinal Veri Listeleri
+        let allGames = [
+          { name: 'DREAD FLATS', type: 'korku, bulmaca', playtime: '2 saat', steamId: '3114900' },
+          { name: 'CLINK', type: 'Korku', playtime: '1 saat', steamId: '3494130', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3494130/079f1a0c06f0186e132c815f3353543514a3cc44/header.jpg?t=1749669037' },
+          { name: 'THE KIDNAP', type: 'gerilim, japon korku', playtime: '1 saat', steamId: '2593900' },
+          { name: 'THE EXIT 8', type: 'anomali', playtime: '30 dakika', steamId: '2653790' },
+          { name: 'SHINKANSE 0', type: 'zor anomali', playtime: '1-2 saat', steamId: '2793370' },
+          { name: 'WE HARVEST SHADOWS', type: 'indie demo korku', playtime: '2 saat', steamId: '1559720' },
+          { name: 'THE STAIRWAY 7', type: 'anomali, kedy', playtime: '1 saat', steamId: '2911820' },
+          { name: 'BROKENLORE: DON\'T WATCH', type: 'korku', playtime: '1 saat', steamId: '2351330' },
+          { name: 'Platform 8', type: 'anomali', playtime: '20 dakika', steamId: '2903560' },
+          { name: 'The Closing Shift', type: 'japon korku', playtime: '1-2 saat', steamId: '1843090' },
+          { name: 'PARASOCIAL', type: 'japon korku', playtime: '1-1,5 saat', steamId: '2314720' },
+          { name: 'THE CONVENIENCE STORE', type: 'japon korku', playtime: '1 saat', steamId: '1228520' },
+          { name: 'THE KARAOKE', type: 'japon korku', playtime: '1 saat', steamId: '2200190' },
+          { name: 'Skull Hotel', type: 'anomali', playtime: '1 Saat', steamId: '3739730', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3739730/c3f9088f09dabf6f07eb3595b6687b680a1cacbf/header.jpg?t=1761749116' },
+          { name: 'No, I\'m not a Human', type: 'gizem', playtime: '2,50 saat - sonsuz saat', steamId: '3180070' },
+          { name: 'HELLMART', type: 'korku', playtime: '3 saat', steamId: '3762550', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3762550/8d5561f21bb46dd76d7a8b863c901d6a05e19204/header.jpg?t=1770292620' },
+          { name: 'Last Report', type: 'korku, psikolojik', playtime: '1.50 - 2.50 saat', steamId: '3209480' },
+          { name: 'We Used to Play Here', type: 'korku', playtime: '1.5 saat', steamId: '3998890', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3998890/13a794115c7891c71f83393c21e2ebc53df5f25b/header.jpg?t=1766131439' },
+          { name: 'Toilet 8', type: 'anomali', playtime: '40 dakika', steamId: '4142980', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4142980/c9b71c6acd939c39044b3c56e51b0f8ab12e93bb/header.jpg?t=1772537552' },
+          { name: "Don't Play This", type: 'korku', playtime: '1 saat', steamId: '3319120', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3319120/07d1ccb485d61cb593b42e8932fecf03e18f4a9c/header.jpg?t=1776353186' },
+          { name: 'The Guest 2', type: 'korku', playtime: '1 saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971' },
+          { name: 'The Strange Lights', type: 'korku', playtime: '40 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3823950/6e090fcb7c2b15dbbdbdc2d78fff00ef053b0032/header.jpg?t=1770474068' },
+          { name: 'The Last Letter', type: 'korku', playtime: '50 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4508710/f34472f838adc1f0c5f909f98835d5c07e6bcad9/header.jpg?t=1776955886' },
+          { name: 'Empty Gauge', type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3998790/231429f45e9511324cd000a7ad5485b54d8014b4/header.jpg?t=1776617740' },
+          { name: 'Dread Neighboard', type: 'korku, demo', playtime: '20 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210' },
+          { name: "DON'T OPEN", type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4498870/ea34ad27ebbf448fddea528f9581b4f1eb008da4/header.jpg?t=1773904304' },
+          { name: 'Tostchu', type: 'korku', playtime: '2.5-3 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2221500/header.jpg?t=1730124471' },
+          { name: 'Halu - The Fracture', type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3893210/e8c64e4126aa7892741ee9c8de936b3eadb13b33/header.jpg?t=1759002158' },
+          { name: 'The Tall Man Tapes', type: 'korku', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3369940/1db13731da19cd14a71b6a1c1fc41abf6b496b01/header.jpg?t=1771883392' },
+          { name: 'Let Me In', type: 'korku, demo', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4224400/68a891560fbdbc57cd0f2ff21ed2fd1ba8d7cdcb/header.jpg?t=1776778481' },
+          { name: 'Lair of Torment', type: 'korku', playtime: '30 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2508210/header.jpg?t=1776012905' },
+          { name: 'Make Good Choices', type: 'anomali', playtime: '1 saat', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3410310/header.jpg?t=1737678394' },
+          { name: "Willie's Nightfall", type: 'korku', playtime: '40 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3198320/header.jpg?t=1737268713' },
+          { name: '[Nightmare Files] Clap Clap', type: 'korku', playtime: '25 dakika', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2933290/header.jpg?t=1765139513' },
+          { name: 'Supernormal', type: 'korku', playtime: '1 saat 20 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2532430/header.jpg?t=1733831256' },
+          { name: 'HorrorCore: Labirent ve Korku Havuzları', type: 'korku', playtime: '50 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3440410/header.jpg?t=1769786355' },
+          { name: 'İblis 2', type: 'korku', playtime: '1 saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2205460/header.jpg?t=1699556680' },
+          { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' }
         ];
 
-        const defaultChillGames = [
-          { name: 'Lemon Cake', desc: 'Eski bir fırını onar, malzemeleri yetiştir ve tatlılar pişir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1338330/header.jpg?t=1667869401', time: '17-20 Saat', tags: ['üretim'] }, [cite: 12]
-          { name: 'Magical Delicacy', desc: 'Kendi dükkanında büyülü yemekler pişir ve kasabaya teslim et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2231190/6406b69136197a10fb03307c3cca986f304eefbb/header.jpg?t=1769018053', time: '20-30 Saat', tags: ['üretim'] }, [cite: 12]
-          { name: 'Melatonin', desc: 'Rüyalar ve gerçeğin birbirine karıştığı büyülü bir ritim oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1585220/header.jpg?t=1745444179', time: '2-3 Saat', tags: ['tıklama'] }, [cite: 12, 13]
-          { name: 'Assemble with Care', desc: 'Değerli antikaları tamir et ve eşyaların arkasındaki hikayeleri çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1202900/header.jpg?t=1762967969', time: '1-2 Saat', tags: ['tıklama'] }, [cite: 13]
-          { name: 'Cast n Chill', desc: 'Ekranının bir köşesinde balık tut, sadece arkana yaslan ve rahatla.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3483740/b3861b297ccb9284cd066c91f57b8b97b8e9fa91/header_alt_assets_4.jpg?t=1770355191', time: '17-20 Saat', tags: ['tıklama'] }, [cite: 13, 14]
-          { name: 'Last Day of June', desc: 'Sevdiklerini kurtarmak için geçmişi değiştirdiğin duygusal bir yolculuk.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/635320/header.jpg?t=1634642828', time: '3-4 Saat', tags: ['dünya'] }, [cite: 14]
-          { name: 'Easy Delivery Co.', desc: 'Paketleri zamanında ve güvenle teslim etmeye çalıştığın rahat bir simülasyon.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3293010/2d0ded07083fd997234193517d5a6c65a1cf7920/header.jpg?t=1774775396', time: '5-8 Saat', tags: ['dünya'] }, [cite: 14]
-          { name: 'Carto', desc: 'Dünya haritasını parçalara ayır ve yolu bulmak için yeniden birleştir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172450/header.jpg?t=1773690780', time: '6-8 Saat', tags: ['dünya'] }, [cite: 14, 15]
-          { name: 'Papa\'s Pizzeria Deluxe', desc: 'Efsanevi pizzacı geri döndü! Hamuru aç, malzemeleri diz, müşterileri doyur.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3259470/header.jpg?t=1732030361', time: '30 Saat', tags: ['üretim'] }, [cite: 15, 16]
-          { name: 'Good Pizza Great Pizza', desc: 'Kendi dükkanını işlet, rakiplerinle yarış ve en iyi pizzayı yap.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/770810/header_turkish.jpg?t=1754518216', time: '20-25 Saat', tags: ['üretim'] }, [cite: 16]
-          { name: 'Tiny Glade', desc: 'Izgara yok, yönetim stresi yok. Sadece huzurlu bir şekilde kaleler inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2198150/header.jpg?t=1774883465', time: '3-5 Saat', tags: ['ev yap'] }, [cite: 16, 17]
-          { name: 'PowerWash Sim', desc: 'Basınçlı suyun rahatlatıcı sesiyle en inatçı kirleri bile temizle.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1290000/header.jpg?t=1756929451', time: '50 Saat', tags: ['ADHD'] }, [cite: 17]
-          { name: 'PowerWash Sim 2', desc: 'Yeni mekanlar ve daha güçlü araçlarla temizlik keyfine devam et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2968420/91fea40a711c5a74cce1bb1a9e05c48a379f6aa0/header.jpg?t=1768317251', time: '40 Saat', tags: ['ADHD'] }, [cite: 17, 18]
-          { name: 'MakeRoom', desc: 'Minyatür odalar tasarla, eşyaları yerleştir ve hayalindeki alanı yarat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2212670/228d1445433d45248e40abb0e402a6934199d569/header.jpg?t=1772889346', time: '2-3 Saat', tags: ['ev yap'] }, [cite: 18]
-          { name: 'Birth', desc: 'Yalnızlığını gidermek için kemiklerden ve organlardan bir arkadaş inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1889040/header.jpg?t=1739362118', time: '2 Saat', tags: ['bulmaca'] }, [cite: 18]
-          { name: 'House Flipper', desc: 'Harabe haldeki evleri satın al, tamir et, baştan döşe ve kârla sat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/613100/6cee40fe293f0bab47534e78bcda64487902efc1/header.jpg?t=1775231659', time: '13-30 Saat', tags: ['ev yap'] }, [cite: 18, 19]
-          { name: 'House Flipper 2', desc: 'Daha iyi grafikler ve yeni mekaniklerle en iyi ev yenileme deneyimi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1190970/a8c4bf872d073e27e96c2179e19a5cd9971bfd2e/header.jpg?t=1775023916', time: '14-22 Saat', tags: ['ev yap'] }, [cite: 19]
-          { name: 'Viewfinder', desc: 'Fotoğrafları dünyaya yerleştirerek gerçekliği bük ve bulmacaları çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1382070/a69eb56f73446624325dec8a4fe74dc4ae09fb96/header.jpg?t=1764842475', time: '5 Saat', tags: ['chill yürüme'] }, [cite: 19, 20]
-          { name: 'Superliminal', desc: 'Bakış açını değiştirerek nesnelerin boyutunu değiştirdiğin rüya dünyası.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1049410/header.jpg?t=1755294276', time: '2-3 Saat', tags: ['bulmaca'] }, [cite: 20]
-          { name: 'Potion Craft', desc: 'Malzemeleri öğüt, kazanı karıştır ve kasabalılar için iksirler hazırla.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1210320/header.jpg?t=1775228161', time: '18-28 Saat', tags: ['üretim'] }, [cite: 20]
-          { name: 'Bulb Boy', desc: 'Karanlık bir evde parlayan kafanla ürkütücü bulmacaları çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/390290/header.jpg?t=1762291079', time: '2 Saat', tags: ['macera'] }, [cite: 20, 21]
-          { name: 'Impostor Factory', desc: 'To the Moon serisinden çılgın bir zaman döngüsü ve cinayet gizemi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1182620/header.jpg?t=1726196467', time: '4 Saat', tags: ['dünya'] }, [cite: 21]
-          { name: 'DAVE THE DIVER', desc: 'Gündüzleri derin okyanusu keşfet, geceleri başarılı bir suşi dükkanı işlet.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868140/81bdb3bce15d27ca1b4554a642d91096e89be229/header.jpg?t=1775198556', time: '25-35 Saat', tags: ['dünya'] }, [cite: 21, 22]
-          { name: 'Gone Home', desc: 'Yurtdışından evine döndün ama kimse yok. Ailene ne olduğunu çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/232430/header.jpg?t=1756162182', time: '2-3 Saat', tags: ['yürüme'] }, [cite: 22, 23]
-          { name: 'Journey', desc: 'Uçsuz bucaksız çölleri aş ve gizemli bir dağa doğru yolculuğa çık.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/638230/header.jpg?t=1729099361', time: '2-3 Saat', tags: ['chill yürüme'] }, [cite: 23]
-          { name: 'Vampire Survivors', desc: 'Üzerine gelen binlerce yaratığa karşı sadece yürüyerek hayatta kal.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1794680/header.jpg?t=1763675244', time: '20 Saat', tags: ['macera'] }, [cite: 23, 24]
-          { name: 'Do Not Feed Monkeys', desc: 'Kafeslerdeki insanları gizlice izle, sırlar öğren ama sakın onlarla konuşma.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/658850/header.jpg?t=1773119823', time: '5-7 Saat', tags: ['tıklama'] }, [cite: 24]
-          { name: 'Silence', desc: 'Savaşın ortasında sessiz ve büyülü bir dünyaya kaçan kardeşlerin hikayesi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/314790/header.jpg?t=1734630128', time: '3-6 Saat', tags: ['macera'] }, [cite: 24]
-          { name: 'A Short Hike', desc: 'Huzurlu bir ada parkında zirveye tırman, uç, balık tut ve keşfet.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1055540/header.jpg?t=1755182478', time: '1-2 Saat', tags: ['dünya'] }, [cite: 24, 25]
-          { name: 'SUMMERHOUSE', desc: 'Küçük, nostaljik ve yaşanmışlık dolu mahalleler kur. Kural yok.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2533960/header.jpg?t=1767702402', time: '1 Saat', tags: ['ev yap'] }, [cite: 25, 26]
-          { name: 'Level Devil', desc: 'Seni kandırmak için tasarlanmış sinir bozucu ama bağımlılık yapan platform oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3242750/header.jpg?t=1774446792', time: '3-6 Saat', tags: ['bulmaca'] }, [cite: 26]
-          { name: 'FIGHT-QUEST', desc: 'Dövüş ve macera dolu bu demoda kılıcını kaldır, düşmanlarını alt et.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3685570/c8efdb9c6a5ff7c34818bd649c9d263140b66155/header.jpg?t=1773699437', time: 'Demo', tags: ['demo', 'macera'] }, [cite: 26]
-          { name: 'White Knuckle', desc: 'Çöken bir dünyada duvarlara tırmanarak hayatta kalmaya çalıştığın yüksek tempolu bir ko-op oyun.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3195790/header.jpg?t=1767974773', time: '1 saat - sonsuz', tags: ['macera'] }, [cite: 26, 27]
-          { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] } [cite: 28]
+        let chillGames = [
+          { name: 'Lemon Cake', desc: 'Eski bir fırını onar, malzemeleri yetiştir ve tatlılar pişir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1338330/header.jpg?t=1667869401', time: '17-20 Saat', tags: ['üretim'] },
+          { name: 'Magical Delicacy', desc: 'Kendi dükkanında büyülü yemekler pişir ve kasabaya teslim et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2231190/6406b69136197a10fb03307c3cca986f304eefbb/header.jpg?t=1769018053', time: '20-30 Saat', tags: ['üretim'] },
+          { name: 'Melatonin', desc: 'Rüyalar ve gerçeğin birbirine karıştığı büyülü bir ritim oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1585220/header.jpg?t=1745444179', time: '2-3 Saat', tags: ['tıklama'] },
+          { name: 'Assemble with Care', desc: 'Değerli antikaları tamir et ve eşyaların arkasındaki hikayeleri çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1202900/header.jpg?t=1762967969', time: '1-2 Saat', tags: ['tıklama'] },
+          { name: 'Cast n Chill', desc: 'Ekranının bir köşesinde balık tut, sadece arkana yaslan ve rahatla.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3483740/b3861b297ccb9284cd066c91f57b8b97b8e9fa91/header_alt_assets_4.jpg?t=1770355191', time: '17-20 Saat', tags: ['tıklama'] },
+          { name: 'Last Day of June', desc: 'Sevdiklerini kurtarmak için geçmişi değiştirdiğin duygusal bir yolculuk.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/635320/header.jpg?t=1634642828', time: '3-4 Saat', tags: ['dünya'] },
+          { name: 'Easy Delivery Co.', desc: 'Paketleri zamanında ve güvenle teslim etmeye çalıştığın rahat bir simülasyon.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3293010/2d0ded07083fd997234193517d5a6c65a1cf7920/header.jpg?t=1774775396', time: '5-8 Saat', tags: ['dünya'] },
+          { name: 'Carto', desc: 'Dünya haritasını parçalara ayır ve yolu bulmak için yeniden birleştir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172450/header.jpg?t=1773690780', time: '6-8 Saat', tags: ['dünya'] },
+          { name: 'Papa\'s Pizzeria Deluxe', desc: 'Efsanevi pizzacı geri döndü! Hamuru aç, malzemeleri diz, müşterileri doyur.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3259470/header.jpg?t=1732030361', time: '30 Saat', tags: ['üretim'] },
+          { name: 'Good Pizza Great Pizza', desc: 'Kendi dükkanını işlet, rakiplerinle yarış ve en iyi pizzayı yap.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/770810/header_turkish.jpg?t=1754518216', time: '20-25 Saat', tags: ['üretim'] },
+          { name: 'Tiny Glade', desc: 'Izgara yok, yönetim stresi yok. Sadece huzurlu bir şekilde kaleler inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2198150/header.jpg?t=1774883465', time: '3-5 Saat', tags: ['ev yap'] },
+          { name: 'PowerWash Sim', desc: 'Basınçlı suyun rahatlatıcı sesiyle en inatçı kirleri bile temizle.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1290000/header.jpg?t=1756929451', time: '50 Saat', tags: ['ADHD'] },
+          { name: 'PowerWash Sim 2', desc: 'Yeni mekanlar ve daha güçlü araçlarla temizlik keyfine devam et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2968420/91fea40a711c5a74cce1bb1a9e05c48a379f6aa0/header.jpg?t=1768317251', time: '40 Saat', tags: ['ADHD'] },
+          { name: 'MakeRoom', desc: 'Minyatür odalar tasarla, eşyaları yerleştir ve hayalindeki alanı yarat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2212670/228d1445433d45248e40abb0e402a6934199d569/header.jpg?t=1772889346', time: '2-3 Saat', tags: ['ev yap'] },
+          { name: 'Birth', desc: 'Yalnızlığını gidermek için kemiklerden ve organlardan bir arkadaş inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1889040/header.jpg?t=1739362118', time: '2 Saat', tags: ['bulmaca'] },
+          { name: 'House Flipper', desc: 'Harabe haldeki evleri satın al, tamir et, baştan döşe ve kârla sat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/613100/6cee40fe293f0bab47534e78bcda64487902efc1/header.jpg?t=1775231659', time: '13-30 Saat', tags: ['ev yap'] },
+          { name: 'House Flipper 2', desc: 'Daha iyi grafikler ve yeni mekaniklerle en iyi ev yenileme deneyimi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1190970/a8c4bf872d073e27e96c2179e19a5cd9971bfd2e/header.jpg?t=1775023916', time: '14-22 Saat', tags: ['ev yap'] },
+          { name: 'Viewfinder', desc: 'Fotoğrafları dünyaya yerleştirerek gerçekliği bük ve bulmacaları çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1382070/a69eb56f73446624325dec8a4fe74dc4ae09fb96/header.jpg?t=1764842475', time: '5 Saat', tags: ['chill yürüme'] },
+          { name: 'Superliminal', desc: 'Bakış açını değiştirerek nesnelerin boyutunu değiştirdiğin rüya dünyası.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1049410/header.jpg?t=1755294276', time: '2-3 Saat', tags: ['bulmaca'] },
+          { name: 'Potion Craft', desc: 'Malzemeleri öğüt, kazanı karıştır ve kasabalılar için iksirler hazırla.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1210320/header.jpg?t=1775228161', time: '18-28 Saat', tags: ['üretim'] },
+          { name: 'Bulb Boy', desc: 'Karanlık bir evde parlayan kafanla ürkütücü bulmacaları çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/390290/header.jpg?t=1762291079', time: '2 Saat', tags: ['macera'] },
+          { name: 'Impostor Factory', desc: 'To the Moon serisinden çılgın bir zaman döngüsü ve cinayet gizemi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1182620/header.jpg?t=1726196467', time: '4 Saat', tags: ['dünya'] },
+          { name: 'DAVE THE DIVER', desc: 'Gündüzleri derin okyanusu keşfet, geceleri başarılı bir suşi dükkanı işlet.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868140/81bdb3bce15d27ca1b4554a642d91096e89be229/header.jpg?t=1775198556', time: '25-35 Saat', tags: ['dünya'] },
+          { name: 'Gone Home', desc: 'Yurtdışından evine döndün ama kimse yok. Ailene ne olduğunu çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/232430/header.jpg?t=1756162182', time: '2-3 Saat', tags: ['yürüme'] },
+          { name: 'Journey', desc: 'Uçsuz bucaksız çölleri aş ve gizemli bir dağa doğru yolculuğa çık.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/638230/header.jpg?t=1729099361', time: '2-3 Saat', tags: ['chill yürüme'] },
+          { name: 'Vampire Survivors', desc: 'Üzerine gelen binlerce yaratığa karşı sadece yürüyerek hayatta kal.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1794680/header.jpg?t=1763675244', time: '20 Saat', tags: ['macera'] },
+          { name: 'Do Not Feed Monkeys', desc: 'Kafeslerdeki insanları gizlice izle, sırlar öğren ama sakın onlarla konuşma.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/658850/header.jpg?t=1773119823', time: '5-7 Saat', tags: ['tıklama'] },
+          { name: 'Silence', desc: 'Savaşın ortasında sessiz ve büyülü bir dünyaya kaçan kardeşlerin hikayesi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/314790/header.jpg?t=1734630128', time: '3-6 Saat', tags: ['macera'] },
+          { name: 'A Short Hike', desc: 'Huzurlu bir ada parkında zirveye tırman, uç, balık tut ve keşfet.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1055540/header.jpg?t=1755182478', time: '1-2 Saat', tags: ['dünya'] },
+          { name: 'SUMMERHOUSE', desc: 'Küçük, nostaljik ve yaşanmışlık dolu mahalleler kur. Kural yok.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2533960/header.jpg?t=1767702402', time: '1 Saat', tags: ['ev yap'] },
+          { name: 'Level Devil', desc: 'Seni kandırmak için tasarlanmış sinir bozucu ama bağımlılık yapan platform oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3242750/header.jpg?t=1774446792', time: '3-6 Saat', tags: ['bulmaca'] },
+          { name: 'FIGHT-QUEST', desc: 'Dövüş ve macera dolu bu demoda kılıcını kaldır, düşmanlarını alt et.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3685570/c8efdb9c6a5ff7c34818bd649c9d263140b66155/header.jpg?t=1773699437', time: 'Demo', tags: ['demo', 'macera'] },
+          { name: 'White Knuckle', desc: 'Çöken bir dünyada duvarlara tırmanarak hayatta kalmaya çalıştığın yüksek tempolu bir ko-op oyun.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3195790/header.jpg?t=1767974773', time: '1 saat - sonsuz', tags: ['macera'] },
+          { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] }
         ];
 
-        const defaultWishlist = [
-          { name: 'Dispatch', steamId: '2592160' }, [cite: 29]
-          { name: 'AT DEAD OF NIGHT', steamId: '1450830' }, [cite: 29]
-          { name: 'Fears The Fathom', steamId: '1671340' }, [cite: 29]
-          { name: 'Luto', steamId: '1729740' }, [cite: 29]
-          { name: 'MARTHA IS DEAD', steamId: '515960' }, [cite: 29]
-          { name: 'the quarry', steamId: '1577120' }, [cite: 29]
-          { name: 'cronos', steamId: '2101960' }, [cite: 29]
-          { name: 'madison', steamId: '1670870' }, [cite: 29]
-          { name: 'high on life', steamId: '1583230' }, [cite: 29]
-          { name: 'Date or Destiny Kiss or Miss', steamId: '2127030', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2127030/f447ac90059534b1397b5de6fc2b004e5729d6cf/header.jpg?t=1751035600' }, [cite: 29, 30]
-          { name: 'silent hill f', steamId: '2947440', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2947440/7e5d923ac622bd1775ebc9b5d4b5b0a24bf5ed40/header.jpg?t=1770169624' }, [cite: 30]
-          { name: 'Katana ZERO', steamId: '460950' }, [cite: 30]
-          { name: 'Half-Life (Türkçe)', steamId: '70', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/70/header.jpg?t=1745368462', overlayIcon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Roundel_flag_of_Turkey.svg/500px-Roundel_flag_of_Turkey.svg.png' }, [cite: 30]
-          { name: 'Paranormal Tales', steamId: '2193600', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2193600/header.jpg?t=1760022653' }, [cite: 30]
-          { name: 'Perceptum', steamId: '4124340', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4124340/6a7fed1f457e84212554c79eaf3e90c25b056b0f/header.jpg?t=1770842900' }, [cite: 30]
-          { name: 'Goodnight Universe', steamId: '2416100', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2416100/header.jpg?t=1763335395' }, [cite: 31]
-          { name: 'The Walking Dead', steamId: '207610', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/207610/header.jpg?t=1729702559' }, [cite: 31]
-          { name: 'High On Life 2', steamId: '2069250', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2069250/14a0a45da992ca33d59eb318b5cb9598c070e1c1/header.jpg?t=1771480792' } [cite: 31]
+        let favoriteGames = [
+          'The Maid', 'Gas Station Case', 'Skull Hotel', 'No, I\'m not a Human', 'HELLMART', 'Last Report', 'We Used to Play Here', 'Agreee'
         ];
 
-        const defaultFavoriteGames = [
-          'The Maid', 'Gas Station Case', 'Skull Hotel', 'No, I\'m not a Human', 'HELLMART', 'Last Report', 'We Used to Play Here', 'Agreee' [cite: 32]
-        ];
+        let currentTab = 'horror';
 
-        // HAFIZA ENTEGRASYONU (Dinamik eklenenler ve kalpler kaybolmasın diye)
-        let allGames = JSON.parse(localStorage.getItem('customAllGames')) || defaultAllGames;
-        let chillGames = JSON.parse(localStorage.getItem('customChillGames')) || defaultChillGames;
-        let wishlist = JSON.parse(localStorage.getItem('customWishlist')) || defaultWishlist;
-        let favoritedGames = JSON.parse(localStorage.getItem('libraryFavorites')) || defaultFavoriteGames;
-
-        window.chillTagsExcluded = new Set(); // Verideki orijinal Set yapısı [cite: 29]
-        let currentTab = 'korku';
-
-        // DIALOGUE TREE & HİKAYE DEĞİŞKENLERİ (Arka plan motoru için) [cite: 33]
-        let gameList = [...allGames]; [cite: 33]
-        let gameState = 'START';
-        const dialogueTree = {
-          start: { text: "Hey… yalnız mısın?", choices: [ { label: "Evet, yalnızım.", next: 'alone' }, { label: "Hayır, yalnız değilim.", next: 'not_alone' } ] }, [cite: 33]
-          alone: { text: "Şanslısın… Bu sıcakta kalabalık çekilmiyor. Ankara'nın sıcağı artık derimizi yakıyor. İnsan dışarıda beş dakika durunca nefesi kesiliyor.", next: 'stream_q' }, [cite: 33]
-          not_alone: { text: "Öyle mi… İlginç. İçeriden sesler geliyor gibi.", next: 'ankara_heat' }, [cite: 33, 34]
-          ankara_heat: { text: "Bu sıcakta kalabalık çekilmiyor. Ankara'nın sıcağı artık derimizi yakıyor. İnsan dışarıda beş dakika durunca nefesi kesiliyor.", next: 'stream_q' }, [cite: 34]
-          stream_q: { text: "Seni daha önce bir yerde görmüş gibiyim… Yayıncı mısın?", choices: [ { label: "Evet, yayın yapıyorum.", next: 'stream_yes' }, { label: "Hayır.", next: 'stream_no' } ] }, [cite: 34]
-          stream_yes: { text: "Vay be… Ben de eskiden yayın yapardım. Ama o günler çok geride kaldı.", next: 'final' }, [cite: 34, 35]
-          stream_no: { text: "Anladım… Eskiden ben de yayın yapardım. Ama o günler çok geride kaldı.", next: 'final' }, [cite: 35, 36]
-          final: { text: "Oyunları seçmende belki sana yardımcı olurum. Neden beni içeri almıyorsun?", choices: [ { label: "İçeri gel.", next: 'enter' }, { label: "Git buradan.", next: 'reject' } ] }, [cite: 36, 37]
-          enter: { action: () => { alert('ÖLDÜN.'); location.reload(); } }, [cite: 37]
-          reject: { action: () => { console.log('NPC reddedildi'); } } [cite: 38]
-        };
-
-        // MODAL (PENCERE) KONTROLÜ
-        function toggleModal(show) {
-            document.getElementById('addGameModal').style.display = show ? 'flex' : 'none';
+        // LocalStorage üzerinde verileri kalıcı kılmak
+        if (localStorage.getItem('lib_allGames')) {
+            allGames = JSON.parse(localStorage.getItem('lib_allGames'));
+            chillGames = JSON.parse(localStorage.getItem('lib_chillGames'));
+            favoriteGames = JSON.parse(localStorage.getItem('lib_favoriteGames'));
         }
 
-        function handleFormCategoryChange() {
-            const cat = document.getElementById('formCategory').value;
-            document.getElementById('formTagsGroup').style.display = (cat === 'chill') ? 'block' : 'none';
+        function saveStateToLocal() {
+            localStorage.setItem('lib_allGames', JSON.stringify(allGames));
+            localStorage.setItem('lib_chillGames', JSON.stringify(chillGames));
+            localStorage.setItem('lib_favoriteGames', JSON.stringify(favoriteGames));
         }
 
-        // YENİ OYUN EKLEME FONKSİYONU
-        function saveNewGame() {
-            const name = document.getElementById('formName').value.trim();
-            const category = document.getElementById('formCategory').value;
-            const desc = document.getElementById('formDesc').value.trim();
-            const time = document.getElementById('formTime').value.trim();
-            const img = document.getElementById('formImage').value.trim();
-            const steamId = document.getElementById('formSteamId').value.trim();
-            const tagsInput = document.getElementById('formTags').value.trim();
-
-            if (!name) {
-                alert('Lütfen en azından bir oyun adı girin!');
-                return;
-            }
-
-            if (category === 'korku') {
-                allGames.push({ name, type: desc || 'Korku', playtime: time || 'Belirtilmedi', steamId, image: img });
-                localStorage.setItem('customAllGames', JSON.stringify(allGames));
-            } else if (category === 'chill') {
-                const tagsArray = tagsInput ? tagsInput.split(',').map(t => t.trim().toLowerCase()) : ['genel'];
-                chillGames.push({ name, desc: desc || 'Rahatlatıcı deneyim.', img: img || '', time: time || 'Belirtilmedi', tags: tagsArray });
-                localStorage.setItem('customChillGames', JSON.stringify(chillGames));
-            } else if (category === 'wishlist') {
-                wishlist.push({ name, steamId, image: img });
-                localStorage.setItem('customWishlist', JSON.stringify(wishlist));
-            }
-
-            alert(`${name} başarıyla kütüphaneye eklendi!`);
-            toggleModal(false);
-            
-            // Formu temizle
-            document.getElementById('formName').value = '';
-            document.getElementById('formDesc').value = '';
-            document.getElementById('formTime').value = '';
-            document.getElementById('formImage').value = '';
-            document.getElementById('formSteamId').value = '';
-            document.getElementById('formTags').value = '';
-
-            // Bulunulan sekmeyi yenile
-            renderCategory(currentTab);
+        // Etiket ismine göre renk sınıflarını getirme
+        function getTagClass(tag) {
+            tag = tag.toLowerCase().trim();
+            if (tag.includes('anomali')) return 'tag-anomali';
+            if (tag.includes('korku')) return 'tag-korku';
+            if (tag.includes('bulmaca')) return 'tag-bulmaca';
+            if (tag.includes('japon')) return 'tag-japon';
+            if (tag.includes('üretim')) return 'tag-üretim';
+            if (tag.includes('tıklama')) return 'tag-tıklama';
+            if (tag.includes('ev yap') || tag.includes('ev')) return 'tag-ev';
+            return 'tag-default';
         }
 
-        // KALP / FAVORİ DURUMUNU DEĞİŞTİRME
-        function toggleFavorite(gameName, element, event) {
-            event.stopPropagation(); // Karta tıklama eventini engellemek için
-            
-            if (favoritedGames.includes(gameName)) {
-                favoritedGames = favoritedGames.filter(name => name !== gameName);
-                element.classList.remove('favorited');
-                element.innerHTML = '♡';
-            } else {
-                favoritedGames.push(gameName);
-                element.classList.add('favorited');
-                element.innerHTML = '♥';
-            }
-            localStorage.setItem('libraryFavorites', JSON.stringify(favoritedGames));
-
-            // Favoriler sekmesindeysek kartı anlık listeden düşür
-            if (currentTab === 'favorites') {
-                renderCategory('favorites');
-            }
-        }
-
-        // CHILL SEKMESİ İÇİN ETİKET SEÇİM ÇUBUĞUNU OLUŞTURMA
-        function buildTagsBar() {
-            const bar = document.getElementById('tags-filter-bar');
-            bar.innerHTML = '';
-            
-            // Tüm benzersiz etiketleri topla
-            const allTags = new Set();
-            chillGames.forEach(g => { if(g.tags) g.tags.forEach(t => allTags.add(t)); });
-
-            allTags.forEach(tag => {
-                const pill = document.createElement('span');
-                pill.className = `tag-pill ${window.chillTagsExcluded.has(tag) ? 'excluded' : ''}`;
-                pill.innerText = tag.toUpperCase();
-                pill.onclick = () => {
-                    if (window.chillTagsExcluded.has(tag)) {
-                        window.chillTagsExcluded.delete(tag);
-                    } else {
-                        window.chillTagsExcluded.add(tag);
-                    }
-                    buildTagsBar();
-                    renderCategory('chill');
-                };
-                bar.appendChild(pill);
-            });
-        }
-
-        // KATEGORİ DEĞİŞTİRME TETİKLEYİCİSİ
-        function switchCategory(category, buttonElement) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-            
-            // Chill alanında filtre çubuğunu aç/kapat
-            document.getElementById('tags-filter-bar').style.display = (category === 'chill') ? 'flex' : 'none';
-            
-            renderCategory(category);
-        }
-
-        // EKRANA OYUN KARTLARINI YANSITMA MOTORU
-        function renderCategory(category) {
-            currentTab = category;
-            const container = document.getElementById('games-container');
+        // Oyun listesini ekrana basma (Dinamik render yapısı)
+        function renderGames() {
+            const container = document.getElementById('game-container');
             container.innerHTML = '';
 
-            let displayList = [];
+            const listToRender = (currentTab === 'horror') ? allGames : chillGames;
 
-            if (category === 'korku') {
-                displayList = allGames.map(g => ({
-                    originalName: g.name, name: g.name, desc: 'Tür: ' + (g.type || 'Korku'),
-                    img: g.image || (g.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${g.steamId}/header.jpg` : ''),
-                    badge: g.playtime || 'Süre Yok', meta: g.steamId ? 'ID: ' + g.steamId : 'Kütüphane'
-                }));
-            } 
-            else if (category === 'chill') {
-                // Elenen etiketleri filtrele
-                const filteredChill = chillGames.filter(g => {
-                    if (!g.tags) return true;
-                    return !g.tags.some(t => window.chillTagsExcluded.has(t));
-                });
-
-                displayList = filteredChill.map(g => ({
-                    originalName: g.name, name: g.name, desc: g.desc,
-                    img: g.img, badge: g.time || 'Süre Yok', meta: (g.tags ? g.tags.join(', ') : 'chill')
-                }));
-                buildTagsBar();
-            } 
-            else if (category === 'wishlist') {
-                displayList = wishlist.map(g => ({
-                    originalName: g.name, name: g.name, desc: 'İstek listesindeki planlanan macera.',
-                    img: g.image || (g.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${g.steamId}/header.jpg` : ''),
-                    badge: 'Wishlist', meta: g.steamId ? 'ID: ' + g.steamId : 'Plan', overlayIcon: g.overlayIcon
-                }));
-            } 
-            else if (category === 'favorites') {
-                // Tüm listelerden ismi favoritedGames havuzunda olanları eşleştirerek topla
-                const pool = [
-                    ...allGames.map(g => ({...g, pCat: 'korku'})),
-                    ...chillGames.map(g => ({...g, pCat: 'chill'})),
-                    ...wishlist.map(g => ({...g, pCat: 'wishlist'}))
-                ];
+            listToRender.forEach((game, index) => {
+                const isFavorite = favoriteGames.some(fav => fav.toLowerCase() === game.name.toLowerCase());
                 
-                const uniqueFavs = pool.filter(g => favoritedGames.includes(g.name));
-
-                displayList = uniqueFavs.map(g => {
-                    if (g.pCat === 'korku') {
-                        return { originalName: g.name, name: g.name, desc: 'Tür: ' + (g.type || 'Korku'), img: g.image || (g.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${g.steamId}/header.jpg` : ''), badge: g.playtime, meta: 'Korku' };
-                    } else if (g.pCat === 'chill') {
-                        return { originalName: g.name, name: g.name, desc: g.desc, img: g.img, badge: g.time, meta: 'Chill' };
-                    } else {
-                        return { originalName: g.name, name: g.name, desc: 'İstek Listesi', img: g.image || (g.steamId ? `https://cdn.akamai.steamstatic.com/steam/apps/${g.steamId}/header.jpg` : ''), badge: 'Wishlist', meta: 'Plan', overlayIcon: g.overlayIcon };
-                    }
-                });
-
-                if (displayList.length === 0) {
-                    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #444; margin-top: 40px; font-size: 1.1rem;">Henüz kalplenmiş favori oyununuz bulunmuyor.</div>`;
-                    return;
+                // Resim adresi kontrolü. Yoksa SteamId şablonuyla çekilir.
+                let gameImg = game.image || game.img || '';
+                if (!gameImg && game.steamId) {
+                    gameImg = `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg`;
                 }
-            }
 
-            // KARTLARI HTML OLARAK OLUŞTURMA VE BASMA
-            displayList.forEach(game => {
-                const isFav = favoritedGames.includes(game.originalName);
+                // Etiketlerin derlenmesi
+                let tagsArray = [];
+                if (game.type) {
+                    tagsArray = game.type.split(',').map(t => t.trim());
+                } else if (game.tags) {
+                    tagsArray = game.tags;
+                }
+
+                const gamePlaytime = game.playtime || game.time || 'Süre girilmedi';
+
                 const card = document.createElement('div');
-                card.className = 'card';
-
-                const finalImg = game.img || 'https://via.placeholder.com/460x215?text=Görsel+Yok';
-                const safeName = game.originalName.replace(/'/g, "\\'");
-
-                // Eğer Türk bayrağı vb. overlayIcon varsa ekle 
-                const overlayHtml = game.overlayIcon ? `<img src="${game.overlayIcon}" class="overlay-icon" alt="badge">` : ''; [cite: 30]
+                card.className = 'game-card';
 
                 card.innerHTML = `
-                    <div class="image-container">
-                        <div class="favorite-btn ${isFav ? 'favorited' : ''}" onclick="toggleFavorite('${safeName}', this, event)">
-                            ${isFav ? '♥' : '♡'}
+                    <div class="image-wrapper">
+                        <div class="heart-badge" onclick="toggleFavorite('${game.name.replace(/'/g, "\\'")}')">
+                            ${isFavorite ? '❤️' : '🤍'}
                         </div>
-                        ${overlayHtml}
-                        <img src="${finalImg}" class="main-img" alt="${game.name}" onerror="this.src='https://via.placeholder.com/460x215?text=Görsel+Yüklenemedi'">
+                        ${gameImg ? `<img src="${gameImg}" class="game-img" alt="${game.name}" onerror="this.src='https://via.placeholder.com/460x215?text=Görsel+Bulunamadı'">` : `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#555; font-size:13px; font-style:italic;">Görsel Tanımlı Değil</div>`}
                     </div>
                     <div class="card-content">
-                        <div class="card-title">${game.name}</div>
-                        <div class="card-desc">${game.desc || ''}</div>
-                        <div class="card-meta">
-                            <span class="badge">${game.badge || 'Süre Yok'}</span>
-                            <span style="text-transform: uppercase; font-size:0.7rem; color:#444;">${game.meta || ''}</span>
+                        <div>
+                            <div class="game-title">${game.name}</div>
+                            ${game.desc ? `<div class="game-desc">${game.desc}</div>` : ''}
+                            <div class="game-meta">
+                                <span>⏱️ ${gamePlaytime}</span>
+                                ${game.year ? `<span>📅 ${game.year}</span>` : ''}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="tag-container">
+                                ${tagsArray.map(tag => `<span class="tag ${getTagClass(tag)}">${tag}</span>`).join('')}
+                            </div>
+                            <div class="card-actions">
+                                <button class="delete-btn" onclick="deleteGame(${index})">Sil 🗑️</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -729,9 +601,201 @@
             });
         }
 
-        // Sayfa ilk yüklendiğinde Korku listesini otomatik aç
-        window.onload = () => {
-            renderCategory('korku');
+        // Sekmeler arası geçiş
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-horror').classList.toggle('active', tab === 'horror');
+            document.getElementById('tab-chill').classList.toggle('active', tab === 'chill');
+            
+            if (tab === 'chill') {
+                document.body.classList.add('chill-active');
+            } else {
+                document.body.classList.remove('chill-active');
+            }
+            renderGames();
+        }
+
+        // Kalp durumunu değiştirme
+        function toggleFavorite(gameName) {
+            const index = favoriteGames.findIndex(fav => fav.toLowerCase() === gameName.toLowerCase());
+            if (index > -1) {
+                favoriteGames.splice(index, 1);
+            } else {
+                favoriteGames.push(gameName);
+            }
+            saveStateToLocal();
+            renderGames();
+        }
+
+        // Modalı açma ve kapama
+        function openModal() {
+            document.getElementById('add-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('add-modal').style.display = 'none';
+            document.getElementById('game-form').reset();
+            toggleFormTagsField();
+        }
+
+        function toggleFormTagsField() {
+            const category = document.getElementById('form-category').value;
+            const tagsField = document.getElementById('tags-field');
+            const descField = document.getElementById('desc-field');
+            if (category === 'chill') {
+                tagsField.style.display = 'block';
+                descField.style.display = 'block';
+            } else {
+                tagsField.style.display = 'none';
+                descField.style.display = 'none';
+            }
+        }
+
+        // Formdan yeni oyun ekleme
+        function addGame(e) {
+            e.preventDefault();
+            const category = document.getElementById('form-category').value;
+            const name = document.getElementById('form-name').value.trim();
+            const image = document.getElementById('form-image').value.trim();
+            const steamId = document.getElementById('form-steamid').value.trim();
+            const year = document.getElementById('form-year').value;
+            const playtime = document.getElementById('form-playtime').value.trim();
+            const tags = document.getElementById('form-tags').value.trim();
+            const desc = document.getElementById('form-desc').value.trim();
+            const favorite = document.getElementById('form-favorite').checked;
+
+            if (favorite) {
+                if (!favoriteGames.some(fav => fav.toLowerCase() === name.toLowerCase())) {
+                    favoriteGames.push(name);
+                }
+            }
+
+            if (category === 'horror') {
+                const newHorror = {
+                    name: name,
+                    type: tags ? tags : 'Korku',
+                    playtime: playtime
+                };
+                if (steamId) newHorror.steamId = steamId;
+                if (image) newHorror.image = image;
+                if (year) newHorror.year = year;
+                allGames.unshift(newHorror); // Başa ekler
+            } else {
+                const newChill = {
+                    name: name,
+                    desc: desc ? desc : 'Açıklama girilmedi.',
+                    time: playtime,
+                    tags: tags ? tags.split(',').map(t => t.trim()) : ['chill']
+                };
+                if (image) newChill.img = image;
+                if (steamId) newChill.steamId = steamId;
+                if (year) newChill.year = year;
+                chillGames.unshift(newChill);
+            }
+
+            saveStateToLocal();
+            closeModal();
+            renderGames();
+        }
+
+        // Oyun silme
+        function deleteGame(index) {
+            if (confirm("Bu oyunu listeden kalıcı olarak silmek istiyor musun?")) {
+                if (currentTab === 'horror') {
+                    allGames.splice(index, 1);
+                } else {
+                    chillGames.splice(index, 1);
+                }
+                saveStateToLocal();
+                renderGames();
+            }
+        }
+
+        // 1. DIŞA AKTAR: JS Dosyası (Sana attığın formatın birebir aynısı)
+        function exportToJS() {
+            let jsString = `const allGames = ${JSON.stringify(allGames, null, 2)};\n\n`;
+            jsString += `const chillGames = ${JSON.stringify(chillGames, null, 2)};\n\n`;
+            jsString += `const favoriteGames = ${JSON.stringify(favoriteGames, null, 2)};`;
+
+            triggerDownload(jsString, 'data.js', 'text/javascript');
+        }
+
+        // 2. DIŞA AKTAR: Manifest (JSON Dosyası)
+        function exportToManifest() {
+            const manifest = {
+                allGames: allGames,
+                chillGames: chillGames,
+                favoriteGames: favoriteGames
+            };
+            triggerDownload(JSON.stringify(manifest, null, 2), 'manifest.json', 'application/json');
+        }
+
+        // Bilgisayara dosya indirme tetikleyicisi
+        function triggerDownload(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            link.remove();
+        }
+
+        // 3. İÇE AKTAR: JS veya JSON yedeğini yükleme
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                try {
+                    // JSON Manifest formatındaysa
+                    if (text.trim().startsWith('{')) {
+                        const parsed = JSON.parse(text);
+                        if (parsed.allGames) allGames = parsed.allGames;
+                        if (parsed.chillGames) chillGames = parsed.chillGames;
+                        if (parsed.favoriteGames) favoriteGames = parsed.favoriteGames;
+                        
+                        saveStateToLocal();
+                        renderGames();
+                        alert("Manifest yedeği başarıyla yüklendi!");
+                    } else if (text.includes('const allGames') || text.includes('const chillGames')) {
+                        // Eğer gönderilen js dosyası formatı ise, veriyi güvenli bir şekilde ayrıştırmaya çalışalım
+                        const extractData = (varName) => {
+                            const regex = new RegExp(`(?:const|let|var)\\s+${varName}\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*;?`, 'g');
+                            const match = regex.exec(text);
+                            if (match && match[1]) {
+                                // eval veya Function yardımıyla array formatını JSON nesnesine çeviriyoruz
+                                return new Function(`return ${match[1]}`)();
+                            }
+                            return null;
+                        };
+
+                        const parsedAll = extractData('allGames');
+                        const parsedChill = extractData('chillGames');
+                        const parsedFav = extractData('favoriteGames');
+
+                        if (parsedAll) allGames = parsedAll;
+                        if (parsedChill) chillGames = parsedChill;
+                        if (parsedFav) favoriteGames = parsedFav;
+
+                        saveStateToLocal();
+                        renderGames();
+                        alert("JS yedeği başarıyla ayrıştırıldı ve yüklendi!");
+                    } else {
+                        alert("Uyumsuz dosya formatı. Lütfen sitemizden dışa aktarılan data.js veya manifest.json dosyasını yükleyin.");
+                    }
+                } catch (err) {
+                    alert("Dosya işlenirken hata oluştu. Lütfen geçerli bir yedek dosyası seçin.");
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // İlk açılışta render
+        window.onload = function() {
+            renderGames();
         };
     </script>
 </body>
