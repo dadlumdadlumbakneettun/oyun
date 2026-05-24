@@ -668,7 +668,7 @@
           { name: 'MakeRoom', desc: 'Minyatür odalar tasarla, eşyaları yerleştir ve hayalindeki alanı yarat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2212670/228d1445433d45248e40abb0e402a6934199d569/header.jpg?t=1772889346', time: '2-3 Saat', tags: ['ev yap'] },
           { name: 'Birth', desc: 'Yalnızlığını gidermek için kemiklerden ve organlardan bir arkadaş inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1889040/header.jpg?t=1739362118', time: '2 Saat', tags: ['bulmaca'] },
           { name: 'House Flipper', desc: 'Harabe haldeki evleri satın al, tamir et, baştan döşe ve kârla sat.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/613100/6cee40fe293f0bab47534e78bcda64487902efc1/header.jpg?t=1775231659', time: '13-30 Saat', tags: ['ev yap'] },
-          { name: 'House Flipper 2', desc: 'Daha iyi grafikler ve yeni mekaniklerle en iyi ev yenileme deneyimi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1190970/a8c4bf872d073e27e96c2179e19a5cd9971bfd2e/header.jpg?t=1775023916', time: '14-22 Saat', tags: ['ev yap'] },
+          { name: 'House Flipper 2', desc: 'Daha iyi grafikler and yeni mekaniklerle en iyi ev yenileme deneyimi.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1190970/a8c4bf872d073e27e96c2179e19a5cd9971bfd2e/header.jpg?t=1775023916', time: '14-22 Saat', tags: ['ev yap'] },
           { name: 'Viewfinder', desc: 'Fotoğrafları dünyaya yerleştirerek gerçekliği bük ve bulmacaları çöz.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1382070/a69eb56f73446624325dec8a4fe74dc4ae09fb96/header.jpg?t=1764842475', time: '5 Saat', tags: ['chill yürüme'] },
           { name: 'Superliminal', desc: 'Bakış açını değiştirerek nesnelerin boyutunu değiştirdiğin rüya dünyası.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1049410/header.jpg?t=1755294276', time: '2-3 Saat', tags: ['bulmaca'] },
           { name: 'Potion Craft', desc: 'Malzemeleri öğüt, kazanı karıştır ve kasabalılar için iksirler hazırla.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1210320/header.jpg?t=1775228161', time: '18-28 Saat', tags: ['üretim'] },
@@ -695,11 +695,48 @@
         let currentTab = 'horror';
         let activeEditTags = []; // Düzenlenmekte olan oyunun etiketleri
 
-        // LocalStorage üzerinde verileri kalıcı kılmak
-        if (localStorage.getItem('lib_allGames')) {
-            allGames = JSON.parse(localStorage.getItem('lib_allGames'));
-            chillGames = JSON.parse(localStorage.getItem('lib_chillGames'));
-            favoriteGames = JSON.parse(localStorage.getItem('lib_favoriteGames'));
+        // LocalStorage üzerinde verileri kalıcı kılmak ve yeni varsayılan oyunları entegre etmek
+        function loadState() {
+            try {
+                const localAll = localStorage.getItem('lib_allGames');
+                const localChill = localStorage.getItem('lib_chillGames');
+                const localFav = localStorage.getItem('lib_favoriteGames');
+
+                // 1. Korku oyunlarını yükle ve yeni varsayılanları entegre et
+                if (localAll) {
+                    const parsedAll = JSON.parse(localAll);
+                    const defaultHorror = [...allGames];
+                    allGames = parsedAll;
+                    // Eğer yeni eklenen oyunlar kullanıcının hafızasında yoksa listeye ekle
+                    defaultHorror.forEach(defaultGame => {
+                        if (!allGames.some(g => g.name.toLowerCase() === defaultGame.name.toLowerCase())) {
+                            allGames.push(defaultGame);
+                        }
+                    });
+                }
+
+                // 2. Chill oyunlarını yükle ve yeni varsayılanları entegre et
+                if (localChill) {
+                    const parsedChill = JSON.parse(localChill);
+                    const defaultChill = [...chillGames];
+                    chillGames = parsedChill;
+                    defaultChill.forEach(defaultGame => {
+                        if (!chillGames.some(g => g.name.toLowerCase() === defaultGame.name.toLowerCase())) {
+                            chillGames.push(defaultGame);
+                        }
+                    });
+                }
+
+                // 3. Favorileri yükle
+                if (localFav) {
+                    favoriteGames = JSON.parse(localFav);
+                }
+
+                // Birleştirilmiş yeni halini tekrar kaydet
+                saveStateToLocal();
+            } catch (e) {
+                console.error("LocalStorage yükleme hatası:", e);
+            }
         }
 
         function saveStateToLocal() {
@@ -1087,6 +1124,7 @@
 
         // İlk açılışta render
         window.onload = function() {
+            loadState();
             renderGames();
         };
     </script>
