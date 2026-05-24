@@ -548,6 +548,60 @@
     <script>
         // Orijinal Veri Listeleri
         let allGames = [
+          {
+            name: 'Swaddle',
+            type: 'anomali, korku',
+            playtime: 'Belirtilmedi',
+            steamId: '4383370',
+            year: 2026,
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4383370/be3fb51fb0a1895c888a19811ee4cc56c355c209/header.jpg?t=1776956693',
+            desc: 'Siz, doğum servisinde stajyer bir doktorsunuz ve göreviniz her gece ikinci kattaki yeni doğan bebekleri gözetmek. Ancak çok aç bir şey bu çocuklara ulaşmak ve onları yemek istiyor. Hemen durdurun. Bebekleri kurtarın.'
+          },
+          {
+            name: 'The Guest II',
+            type: 'korku',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971',
+            steamId: '4466990',
+            year: 2026,
+            desc: 'The Guest II, birinci şahıs bakış açısıyla oynanan psikolojik bir korku oyunudur.'
+          },
+          {
+            name: '恶意 (Malice)',
+            type: 'korku',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210',
+            steamId: '4111260',
+            year: 2026,
+            desc: 'Çıkış yılı 2026 olan gizemli ve gerilim dolu korku oyunu.'
+          },
+          {
+            name: 'Overcome Your Fears - Caretaker',
+            type: 'korku',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3550490/cbd34ac4c5465cd866035baad4f75ec11293aea1/header.jpg?t=1778126229',
+            steamId: '3550490',
+            year: 2025,
+            desc: '19 yaşındaki Steve Jackson, arkadaşlarının evini beklerken küçük bir kasabada ürkütücü olaylarla karşılaşır. İstemsiz bir katılımcısı haline geldiğiniz olayların karanlık gizemine dalın. Gerçeği ortaya çıkarabilecek misiniz?'
+          },
+          {
+            name: 'The Baby In Yellow',
+            type: 'korku',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291340/header.jpg?t=1763401770',
+            steamId: '2291340',
+            year: 2023,
+            desc: 'Yeni bir bebek bakıcılığı işin var ve işler garip bir hal alıyor. Onu besle, yatmadan önce ona bir hikaye oku ve rüyalarına düşmemeye çalış. Kontrolü ne kadar süre elinde tutabilirsin?'
+          },
+          {
+            name: 'Escape from Yandere',
+            type: 'korku, bulmaca',
+            playtime: 'Belirtilmedi',
+            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4081840/357a2f59ec1939f8d0025c0121e86b0f3dabf12c/header.jpg?t=1771446146',
+            steamId: '4081840',
+            year: 2026,
+            desc: 'Yandera sizi evinize kilitledi ve sizden aşk ilanı istiyor. Onunla kalabilir veya kaçmaya çalışabilirsiniz. Evi keşfedin, ama dikkatli olun, Yandera sizi öldürebilir.'
+          },
           { name: 'DREAD FLATS', type: 'korku, bulmaca', playtime: '2 saat', steamId: '3114900' },
           { name: 'CLINK', type: 'Korku', playtime: '1 saat', steamId: '3494130', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3494130/079f1a0c06f0186e132c815f3353543514a3cc44/header.jpg?t=1749669037' },
           { name: 'THE KIDNAP', type: 'gerilim, japon korku', playtime: '1 saat', steamId: '2593900' },
@@ -585,65 +639,19 @@
           { name: 'Supernormal', type: 'korku', playtime: '1 saat 20 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2532430/header.jpg?t=1733831256' },
           { name: 'HorrorCore: Labirent ve Korku Havuzları', type: 'korku', playtime: '50 dakika', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3440410/header.jpg?t=1769786355' },
           { name: 'İblis 2', type: 'korku', playtime: '1 saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2205460/header.jpg?t=1699556680' },
-          { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' },
-          
-          // Yeni Eklenen Korku Oyunları
-          {
-            name: 'Swaddle',
-            type: 'anomali, korku',
-            playtime: 'Belirtilmedi',
-            steamId: '4383370',
-            year: 2026,
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4383370/be3fb51fb0a1895c888a19811ee4cc56c355c209/header.jpg?t=1776956693',
-            desc: 'Siz, doğum servisinde stajyer bir doktorsunuz ve göreviniz her gece ikinci kattaki yeni doğan bebekleri gözetmek. Ancak çok aç bir şey bu çocuklara ulaşmak ve onları yemek istiyor. Hemen durdurun. Bebekleri kurtarın.'
-          },
-          {
-            name: 'The Guest II',
-            type: 'korku',
-            playtime: '1 saat',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971',
-            steamId: '4466990',
-            year: 2026,
-            desc: 'The Guest II, birinci şahıs bakış açısıyla oynanan psikolojik bir korku oyunudur.'
-          },
-          {
-            name: '恶意 (Malice)',
-            type: 'korku, demo',
-            playtime: '20 dakika',
-            image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210',
-            steamId: '4111260',
-            year: 2026
-          },
-          {
-            name: 'Overcome Your Fears - Caretaker',
-            type: 'korku',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3550490/cbd34ac4c5465cd866035baad4f75ec11293aea1/header.jpg?t=1778126229',
-            steamId: '3550490',
-            year: 2025,
-            desc: '19 yaşındaki Steve Jackson, arkadaşlarının evini beklerken küçük bir kasabada ürkütücü olaylarla karşılaşır. İstemsiz bir katılımcısı haline geldiğiniz olayların karanlık gizemine dalın. Gerçeği ortaya çıkarabilecek misiniz?'
-          },
-          {
-            name: 'The Baby In Yellow',
-            type: 'korku',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291340/header.jpg?t=1763401770',
-            steamId: '2291340',
-            year: 2023,
-            desc: 'Yeni bir bebek bakıcılığı işin var ve işler garip bir hal alıyor. Onu besle, yatmadan önce ona bir hikaye oku ve rüyalarına düşmemeye çalış. Kontrolü ne kadar süre elinde tutabilirsin?'
-          },
-          {
-            name: 'Escape from Yandere',
-            type: 'korku, bulmaca',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4081840/357a2f59ec1939f8d0025c0121e86b0f3dabf12c/header.jpg?t=1771446146',
-            steamId: '4081840',
-            year: 2026,
-            desc: 'Yandera sizi evinize kilitledi ve sizden aşk ilanı istiyor. Onunla kalabilir veya kaçmaya çalışabilirsiniz. Evi keşfedin, ama dikkatli olun, Yandera sizi öldürebilir.'
-          }
+          { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' }
         ];
 
         let chillGames = [
+          {
+            name: '60 Seconds!',
+            desc: 'Ailenle nükleer sığınakta hayatta kalma mücadelesi verdiğin eğlenceli ve heyecanlı bir yönetim simülasyonu.',
+            img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/368360/header.jpg?t=1760090040',
+            time: 'Belirtilmedi',
+            steamId: '368360',
+            year: 2015,
+            tags: ['chill', 'hayatta kalma']
+          },
           { name: 'Lemon Cake', desc: 'Eski bir fırını onar, malzemeleri yetiştir ve tatlılar pişir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1338330/header.jpg?t=1667869401', time: '17-20 Saat', tags: ['üretim'] },
           { name: 'Magical Delicacy', desc: 'Kendi dükkanında büyülü yemekler pişir ve kasabaya teslim et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2231190/6406b69136197a10fb03307c3cca986f304eefbb/header.jpg?t=1769018053', time: '20-30 Saat', tags: ['üretim'] },
           { name: 'Melatonin', desc: 'Rüyalar ve gerçeğin birbirine karıştığı büyülü bir ritim oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1585220/header.jpg?t=1745444179', time: '2-3 Saat', tags: ['tıklama'] },
@@ -677,18 +685,7 @@
           { name: 'Level Devil', desc: 'Seni kandırmak için tasarlanmış sinir bozucu ama bağımlılık yapan platform oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3242750/header.jpg?t=1774446792', time: '3-6 Saat', tags: ['bulmaca'] },
           { name: 'FIGHT-QUEST', desc: 'Dövüş ve macera dolu bu demoda kılıcını kaldır, düşmanlarını alt et.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3685570/c8efdb9c6a5ff7c34818bd649c9d263140b66155/header.jpg?t=1773699437', time: 'Demo', tags: ['demo', 'macera'] },
           { name: 'White Knuckle', desc: 'Çöken bir dünyada duvarlara tırmanarak hayatta kalmaya çalıştığın yüksek tempolu bir ko-op oyun.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3195790/header.jpg?t=1767974773', time: '1 saat - sonsuz', tags: ['macera'] },
-          { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] },
-          
-          // Yeni Eklenen Chill Oyunlar
-          {
-            name: '60 Seconds!',
-            desc: 'Ailenle nükleer sığınakta hayatta kalma mücadelesi verdiğin eğlenceli ve heyecanlı bir yönetim simülasyonu.',
-            img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/368360/header.jpg?t=1760090040',
-            time: 'Belirtilmedi',
-            steamId: '368360',
-            year: 2015,
-            tags: ['chill', 'hayatta kalma']
-          }
+          { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] }
         ];
 
         let favoriteGames = [
