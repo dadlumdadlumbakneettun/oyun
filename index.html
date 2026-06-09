@@ -9,7 +9,7 @@
             --bg-color: #08080a;
             --card-bg: #121318;
             --text-color: #e0e0e0;
-            --accent-color: #ff3333; /* Korku için kırmızı */
+            --accent-color: #ff3333;
             --border-color: #1f2026;
             --accent-glow: rgba(255, 51, 51, 0.15);
         }
@@ -18,7 +18,7 @@
             --bg-color: #0f0914;
             --card-bg: #1a1222;
             --text-color: #f0e6f2;
-            --accent-color: #ff75a0; /* Chill için tatlı pembe */
+            --accent-color: #ff75a0;
             --border-color: #2e1e3b;
             --accent-glow: rgba(255, 117, 160, 0.15);
         }
@@ -38,7 +38,6 @@
             padding-bottom: 60px;
         }
 
-        /* Header Tasarımı */
         header {
             display: flex;
             justify-content: space-between;
@@ -71,9 +70,7 @@
             letter-spacing: 1px;
         }
 
-        .tab-btn:hover {
-            color: #8c8c96;
-        }
+        .tab-btn:hover { color: #8c8c96; }
 
         .tab-btn.active {
             color: var(--accent-color);
@@ -84,6 +81,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -103,6 +101,40 @@
             color: #fff;
             background: #1f202a;
         }
+
+        /* Kaydet butonu - özel stil */
+        .save-btn {
+            background: #101810;
+            color: #4caf50;
+            border: 1px solid #2a4a2a;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .save-btn:hover {
+            background: #162416;
+            border-color: #4caf50;
+            color: #6fcf73;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+
+        .save-btn.saved {
+            background: #1a3a1a;
+            border-color: #4caf50;
+            color: #81c784;
+            pointer-events: none;
+        }
+
+        .save-btn .save-icon { font-size: 14px; }
 
         .add-btn {
             font-size: 24px;
@@ -126,7 +158,6 @@
             filter: brightness(1.1);
         }
 
-        /* Grid Yapısı */
         .container {
             max-width: 1400px;
             margin: 40px auto 0;
@@ -139,7 +170,6 @@
             gap: 30px;
         }
 
-        /* Kart Tasarımı */
         .game-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -183,9 +213,7 @@
             user-select: none;
         }
 
-        .heart-badge:hover {
-            transform: scale(1.2);
-        }
+        .heart-badge:hover { transform: scale(1.2); }
 
         .card-content {
             padding: 16px;
@@ -237,7 +265,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Renkli Etiket Sınıfları */
         .tag-anomali { background-color: #8e44ad; color: #fff; }
         .tag-korku { background-color: #962d2d; color: #fff; }
         .tag-bulmaca { background-color: #2980b9; color: #fff; }
@@ -265,11 +292,9 @@
             transition: color 0.2s;
         }
 
-        .delete-btn:hover {
-            color: #ff4757;
-        }
+        .delete-btn:hover { color: #ff4757; }
 
-        /* Modal / Form Tasarımı */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -304,9 +329,7 @@
             transition: color 0.2s;
         }
 
-        .close-modal:hover {
-            color: #fff;
-        }
+        .close-modal:hover { color: #fff; }
 
         .modal h3 {
             font-size: 22px;
@@ -317,9 +340,7 @@
             padding-bottom: 10px;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
+        .form-group { margin-bottom: 16px; }
 
         .form-group label {
             display: block;
@@ -345,7 +366,6 @@
             border-color: var(--accent-color);
         }
 
-        /* İnteraktif Etiket Tasarımı */
         .tags-manager {
             display: flex;
             flex-wrap: wrap;
@@ -383,9 +403,7 @@
             gap: 8px;
         }
 
-        .add-tag-box input {
-            flex-grow: 1;
-        }
+        .add-tag-box input { flex-grow: 1; }
 
         .add-tag-btn {
             background-color: #23252d;
@@ -416,24 +434,23 @@
             margin-top: 10px;
         }
 
-        .submit-btn:hover {
-            filter: brightness(1.1);
-        }
+        .submit-btn:hover { filter: brightness(1.1); }
 
-        .hidden-file {
-            display: none;
-        }
+        .hidden-file { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navigasyon Bölümü -->
     <header>
         <div class="left-header">
             <button class="tab-btn active" id="tab-horror" onclick="switchTab('horror')">KORKU</button>
             <button class="tab-btn" id="tab-chill" onclick="switchTab('chill')">CHILL</button>
         </div>
         <div class="right-header">
+            <button class="save-btn" id="save-btn" onclick="manualSave()">
+                <span class="save-icon">💾</span>
+                <span class="save-label">Kaydet</span>
+            </button>
             <button class="action-btn" onclick="exportToJS()">JS Dışa Aktar</button>
             <button class="action-btn" onclick="exportToManifest()">Manifest Dışa Aktar</button>
             <button class="action-btn" onclick="document.getElementById('import-file-input').click()">İçe Aktar</button>
@@ -442,7 +459,6 @@
         </div>
     </header>
 
-    <!-- Oyun Kataloğu Alanı -->
     <div class="container">
         <div class="game-grid" id="game-container"></div>
     </div>
@@ -497,7 +513,7 @@
         </div>
     </div>
 
-    <!-- Düzenleme ve Detay Modalı -->
+    <!-- Düzenleme / Detay Modalı -->
     <div class="modal-overlay" id="edit-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeEditModal()">&times;</span>
@@ -528,80 +544,28 @@
                     <label>Oyun Açıklaması</label>
                     <textarea id="edit-desc" rows="4" placeholder="Oyun hakkında geniş açıklama..."></textarea>
                 </div>
-                
                 <div class="form-group">
                     <label>Etiket Yönetimi (Silmek için etikete tıklayın)</label>
-                    <div class="tags-manager" id="edit-tags-container">
-                        <!-- Dinamik etiket pilleri gelecek -->
-                    </div>
+                    <div class="tags-manager" id="edit-tags-container"></div>
                     <div class="add-tag-box">
                         <input type="text" id="new-tag-input" placeholder="Yeni etiket adı...">
                         <button type="button" class="add-tag-btn" onclick="addNewTag()">Ekle</button>
                     </div>
                 </div>
-
                 <button type="submit" class="submit-btn">Değişiklikleri Kaydet</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Orijinal Veri Listeleri
-        let allGames = [
-          {
-            name: 'Swaddle',
-            type: 'anomali, korku',
-            playtime: 'Belirtilmedi',
-            steamId: '4383370',
-            year: 2026,
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4383370/be3fb51fb0a1895c888a19811ee4cc56c355c209/header.jpg?t=1776956693',
-            desc: 'Siz, doğum servisinde stajyer bir doktorsunuz ve göreviniz her gece ikinci kattaki yeni doğan bebekleri gözetmek. Ancak çok aç bir şey bu çocuklara ulaşmak ve onları yemek istiyor. Hemen durdurun. Bebekleri kurtarın.'
-          },
-          {
-            name: 'The Guest II',
-            type: 'korku',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971',
-            steamId: '4466990',
-            year: 2026,
-            desc: 'The Guest II, birinci şahıs bakış açısıyla oynanan psikolojik bir korku oyunudur.'
-          },
-          {
-            name: '恶意 (Malice)',
-            type: 'korku',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210',
-            steamId: '4111260',
-            year: 2026,
-            desc: 'Çıkış yılı 2026 olan gizemli ve gerilim dolu korku oyunu.'
-          },
-          {
-            name: 'Overcome Your Fears - Caretaker',
-            type: 'korku',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3550490/cbd34ac4c5465cd866035baad4f75ec11293aea1/header.jpg?t=1778126229',
-            steamId: '3550490',
-            year: 2025,
-            desc: '19 yaşındaki Steve Jackson, arkadaşlarının evini beklerken küçük bir kasabada ürkütücü olaylarla karşılaşır. İstemsiz bir katılımcısı haline geldiğiniz olayların karanlık gizemine dalın. Gerçeği ortaya çıkarabilecek misiniz?'
-          },
-          {
-            name: 'The Baby In Yellow',
-            type: 'korku',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291340/header.jpg?t=1763401770',
-            steamId: '2291340',
-            year: 2023,
-            desc: 'Yeni bir bebek bakıcılığı işin var ve işler garip bir hal alıyor. Onu besle, yatmadan önce ona bir hikaye oku ve rüyalarına düşmemeye çalış. Kontrolü ne kadar süre elinde tutabilirsin?'
-          },
-          {
-            name: 'Escape from Yandere',
-            type: 'korku, bulmaca',
-            playtime: 'Belirtilmedi',
-            image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4081840/357a2f59ec1939f8d0025c0121e86b0f3dabf12c/header.jpg?t=1771446146',
-            steamId: '4081840',
-            year: 2026,
-            desc: 'Yandera sizi evinize kilitledi ve sizden aşk ilanı istiyor. Onunla kalabilir veya kaçmaya çalışabilirsiniz. Evi keşfedin, ama dikkatli olun, Yandera sizi öldürebilir.'
-          },
+        // ─── VARSAYILAN VERİLER ───────────────────────────────────────────────────
+        const DEFAULT_HORROR = [
+          { name: 'Swaddle', type: 'anomali, korku', playtime: 'Belirtilmedi', steamId: '4383370', year: 2026, image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4383370/be3fb51fb0a1895c888a19811ee4cc56c355c209/header.jpg?t=1776956693', desc: 'Siz, doğum servisinde stajyer bir doktorsunuz ve göreviniz her gece ikinci kattaki yeni doğan bebekleri gözetmek. Ancak çok aç bir şey bu çocuklara ulaşmak ve onları yemek istiyor. Hemen durdurun. Bebekleri kurtarın.' },
+          { name: 'The Guest II', type: 'korku', playtime: 'Belirtilmedi', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4466990/6d2b90fe3e775a2dcce7254ec0315da4be3e7f86/header.jpg?t=1776927971', steamId: '4466990', year: 2026, desc: 'The Guest II, birinci şahıs bakış açısıyla oynanan psikolojik bir korku oyunudur.' },
+          { name: '恶意 (Malice)', type: 'korku', playtime: 'Belirtilmedi', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4111260/84a64fa6dc33458da3a3cdff74d1f140dd3f9896/header.jpg?t=1777361210', steamId: '4111260', year: 2026, desc: 'Çıkış yılı 2026 olan gizemli ve gerilim dolu korku oyunu.' },
+          { name: 'Overcome Your Fears - Caretaker', type: 'korku', playtime: 'Belirtilmedi', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3550490/cbd34ac4c5465cd866035baad4f75ec11293aea1/header.jpg?t=1778126229', steamId: '3550490', year: 2025, desc: '19 yaşındaki Steve Jackson, arkadaşlarının evini beklerken küçük bir kasabada ürkütücü olaylarla karşılaşır.' },
+          { name: 'The Baby In Yellow', type: 'korku', playtime: 'Belirtilmedi', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2291340/header.jpg?t=1763401770', steamId: '2291340', year: 2023, desc: 'Yeni bir bebek bakıcılığı işin var ve işler garip bir hal alıyor.' },
+          { name: 'Escape from Yandere', type: 'korku, bulmaca', playtime: 'Belirtilmedi', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4081840/357a2f59ec1939f8d0025c0121e86b0f3dabf12c/header.jpg?t=1771446146', steamId: '4081840', year: 2026, desc: 'Yandera sizi evinize kilitledi ve sizden aşk ilanı istiyor.' },
           { name: 'DREAD FLATS', type: 'korku, bulmaca', playtime: '2 saat', steamId: '3114900' },
           { name: 'CLINK', type: 'Korku', playtime: '1 saat', steamId: '3494130', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3494130/079f1a0c06f0186e132c815f3353543514a3cc44/header.jpg?t=1749669037' },
           { name: 'THE KIDNAP', type: 'gerilim, japon korku', playtime: '1 saat', steamId: '2593900' },
@@ -609,14 +573,14 @@
           { name: 'SHINKANSE 0', type: 'zor anomali', playtime: '1-2 saat', steamId: '2793370' },
           { name: 'WE HARVEST SHADOWS', type: 'indie demo korku', playtime: '2 saat', steamId: '1559720' },
           { name: 'THE STAIRWAY 7', type: 'anomali, kedy', playtime: '1 saat', steamId: '2911820' },
-          { name: 'BROKENLORE: DON\'T WATCH', type: 'korku', playtime: '1 saat', steamId: '2351330' },
+          { name: "BROKENLORE: DON'T WATCH", type: 'korku', playtime: '1 saat', steamId: '2351330' },
           { name: 'Platform 8', type: 'anomali', playtime: '20 dakika', steamId: '2903560' },
           { name: 'The Closing Shift', type: 'japon korku', playtime: '1-2 saat', steamId: '1843090' },
           { name: 'PARASOCIAL', type: 'japon korku', playtime: '1-1,5 saat', steamId: '2314720' },
           { name: 'THE CONVENIENCE STORE', type: 'japon korku', playtime: '1 saat', steamId: '1228520' },
           { name: 'THE KARAOKE', type: 'japon korku', playtime: '1 saat', steamId: '2200190' },
           { name: 'Skull Hotel', type: 'anomali', playtime: '1 Saat', steamId: '3739730', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3739730/c3f9088f09dabf6f07eb3595b6687b680a1cacbf/header.jpg?t=1761749116' },
-          { name: 'No, I\'m not a Human', type: 'gizem', playtime: '2,50 saat - sonsuz saat', steamId: '3180070' },
+          { name: "No, I'm not a Human", type: 'gizem', playtime: '2,50 saat - sonsuz saat', steamId: '3180070' },
           { name: 'HELLMART', type: 'korku', playtime: '3 saat', steamId: '3762550', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3762550/8d5561f21bb46dd76d7a8b863c901d6a05e19204/header.jpg?t=1770292620' },
           { name: 'Last Report', type: 'korku, psikolojik', playtime: '1.50 - 2.50 saat', steamId: '3209480' },
           { name: 'We Used to Play Here', type: 'korku', playtime: '1.5 saat', steamId: '3998890', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3998890/13a794115c7891c71f83393c21e2ebc53df5f25b/header.jpg?t=1766131439' },
@@ -642,16 +606,8 @@
           { name: 'Agreee', type: 'korku', playtime: '10 dakika - sonsuz saat', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353' }
         ];
 
-        let chillGames = [
-          {
-            name: '60 Seconds!',
-            desc: 'Ailenle nükleer sığınakta hayatta kalma mücadelesi verdiğin eğlenceli ve heyecanlı bir yönetim simülasyonu.',
-            img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/368360/header.jpg?t=1760090040',
-            time: 'Belirtilmedi',
-            steamId: '368360',
-            year: 2015,
-            tags: ['chill', 'hayatta kalma']
-          },
+        const DEFAULT_CHILL = [
+          { name: '60 Seconds!', desc: 'Ailenle nükleer sığınakta hayatta kalma mücadelesi verdiğin eğlenceli ve heyecanlı bir yönetim simülasyonu.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/368360/header.jpg?t=1760090040', time: 'Belirtilmedi', steamId: '368360', year: 2015, tags: ['chill', 'hayatta kalma'] },
           { name: 'Lemon Cake', desc: 'Eski bir fırını onar, malzemeleri yetiştir ve tatlılar pişir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1338330/header.jpg?t=1667869401', time: '17-20 Saat', tags: ['üretim'] },
           { name: 'Magical Delicacy', desc: 'Kendi dükkanında büyülü yemekler pişir ve kasabaya teslim et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2231190/6406b69136197a10fb03307c3cca986f304eefbb/header.jpg?t=1769018053', time: '20-30 Saat', tags: ['üretim'] },
           { name: 'Melatonin', desc: 'Rüyalar ve gerçeğin birbirine karıştığı büyülü bir ritim oyunu.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1585220/header.jpg?t=1745444179', time: '2-3 Saat', tags: ['tıklama'] },
@@ -660,7 +616,7 @@
           { name: 'Last Day of June', desc: 'Sevdiklerini kurtarmak için geçmişi değiştirdiğin duygusal bir yolculuk.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/635320/header.jpg?t=1634642828', time: '3-4 Saat', tags: ['dünya'] },
           { name: 'Easy Delivery Co.', desc: 'Paketleri zamanında ve güvenle teslim etmeye çalıştığın rahat bir simülasyon.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3293010/2d0ded07083fd997234193517d5a6c65a1cf7920/header.jpg?t=1774775396', time: '5-8 Saat', tags: ['dünya'] },
           { name: 'Carto', desc: 'Dünya haritasını parçalara ayır ve yolu bulmak için yeniden birleştir.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172450/header.jpg?t=1773690780', time: '6-8 Saat', tags: ['dünya'] },
-          { name: 'Papa\'s Pizzeria Deluxe', desc: 'Efsanevi pizzacı geri döndü! Hamuru aç, malzemeleri diz, müşterileri doyur.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3259470/header.jpg?t=1732030361', time: '30 Saat', tags: ['üretim'] },
+          { name: "Papa's Pizzeria Deluxe", desc: 'Efsanevi pizzacı geri döndü! Hamuru aç, malzemeleri diz, müşterileri doyur.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3259470/header.jpg?t=1732030361', time: '30 Saat', tags: ['üretim'] },
           { name: 'Good Pizza Great Pizza', desc: 'Kendi dükkanını işlet, rakiplerinle yarış ve en iyi pizzayı yap.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/770810/header_turkish.jpg?t=1754518216', time: '20-25 Saat', tags: ['üretim'] },
           { name: 'Tiny Glade', desc: 'Izgara yok, yönetim stresi yok. Sadece huzurlu bir şekilde kaleler inşa et.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2198150/header.jpg?t=1774883465', time: '3-5 Saat', tags: ['ev yap'] },
           { name: 'PowerWash Sim', desc: 'Basınçlı suyun rahatlatıcı sesiyle en inatçı kirleri bile temizle.', img: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1290000/header.jpg?t=1756929451', time: '50 Saat', tags: ['ADHD'] },
@@ -688,101 +644,127 @@
           { name: 'Agreee', desc: 'Ne kadar oynayacağını kendin belirle. 10 dakika da olur, bir ömür de.', img: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3757210/ae36ecedeb4d9f65ed7aa58f8f7dc2d47976d745/header.jpg?t=1769849353', time: '10 dakika - sonsuz', tags: ['tıklama'] }
         ];
 
-        let favoriteGames = [
-          'The Maid', 'Gas Station Case', 'Skull Hotel', 'No, I\'m not a Human', 'HELLMART', 'Last Report', 'We Used to Play Here', 'Agreee'
-        ];
+        // ─── ÇALIŞMA DEĞİŞKENLERİ ────────────────────────────────────────────────
+        let allGames = [];
+        let chillGames = [];
+        let favoriteGames = [];
+        // SİLİNEN OYUNLARI TAKIP EDEN LISTELER — asıl sorunun çözümü
+        let deletedHorror = [];
+        let deletedChill = [];
 
         let currentTab = 'horror';
-        let activeEditTags = []; // Düzenlenmekte olan oyunun etiketleri
+        let activeEditTags = [];
 
-        // LocalStorage üzerinde verileri kalıcı kılmak ve yeni varsayılan oyunları entegre etmek
+        // ─── STORAGE ─────────────────────────────────────────────────────────────
+        function saveStateToLocal() {
+            localStorage.setItem('lib_allGames',     JSON.stringify(allGames));
+            localStorage.setItem('lib_chillGames',   JSON.stringify(chillGames));
+            localStorage.setItem('lib_favoriteGames',JSON.stringify(favoriteGames));
+            localStorage.setItem('lib_deletedHorror',JSON.stringify(deletedHorror));
+            localStorage.setItem('lib_deletedChill', JSON.stringify(deletedChill));
+        }
+
         function loadState() {
             try {
-                const localAll = localStorage.getItem('lib_allGames');
-                const localChill = localStorage.getItem('lib_chillGames');
-                const localFav = localStorage.getItem('lib_favoriteGames');
+                const savedAll   = localStorage.getItem('lib_allGames');
+                const savedChill = localStorage.getItem('lib_chillGames');
+                const savedFav   = localStorage.getItem('lib_favoriteGames');
+                const savedDelH  = localStorage.getItem('lib_deletedHorror');
+                const savedDelC  = localStorage.getItem('lib_deletedChill');
 
-                // 1. Korku oyunlarını yükle ve yeni varsayılanları entegre et
-                if (localAll) {
-                    const parsedAll = JSON.parse(localAll);
-                    const defaultHorror = [...allGames];
-                    allGames = parsedAll;
-                    // Eğer yeni eklenen oyunlar kullanıcının hafızasında yoksa listeye ekle
-                    defaultHorror.forEach(defaultGame => {
-                        if (!allGames.some(g => g.name.toLowerCase() === defaultGame.name.toLowerCase())) {
-                            allGames.push(defaultGame);
+                // Silinmiş listeleri ÖNCE yükle
+                deletedHorror = savedDelH  ? JSON.parse(savedDelH)  : [];
+                deletedChill  = savedDelC  ? JSON.parse(savedDelC)  : [];
+                favoriteGames = savedFav   ? JSON.parse(savedFav)   : ['The Maid', 'Gas Station Case', 'Skull Hotel', "No, I'm not a Human", 'HELLMART', 'Last Report', 'We Used to Play Here', 'Agreee'];
+
+                // Korku oyunları
+                if (savedAll) {
+                    allGames = JSON.parse(savedAll);
+                    // Yeni eklenmiş varsayılanları dahil et — ama silinenleri atlat
+                    DEFAULT_HORROR.forEach(def => {
+                        const alreadyExists = allGames.some(g => g.name.toLowerCase() === def.name.toLowerCase());
+                        const isDeleted     = deletedHorror.some(d => d.toLowerCase() === def.name.toLowerCase());
+                        if (!alreadyExists && !isDeleted) {
+                            allGames.push(def);
                         }
                     });
+                } else {
+                    // İlk açılış: silinenleri filtrele
+                    allGames = DEFAULT_HORROR.filter(def =>
+                        !deletedHorror.some(d => d.toLowerCase() === def.name.toLowerCase())
+                    );
                 }
 
-                // 2. Chill oyunlarını yükle ve yeni varsayılanları entegre et
-                if (localChill) {
-                    const parsedChill = JSON.parse(localChill);
-                    const defaultChill = [...chillGames];
-                    chillGames = parsedChill;
-                    defaultChill.forEach(defaultGame => {
-                        if (!chillGames.some(g => g.name.toLowerCase() === defaultGame.name.toLowerCase())) {
-                            chillGames.push(defaultGame);
+                // Chill oyunları
+                if (savedChill) {
+                    chillGames = JSON.parse(savedChill);
+                    DEFAULT_CHILL.forEach(def => {
+                        const alreadyExists = chillGames.some(g => g.name.toLowerCase() === def.name.toLowerCase());
+                        const isDeleted     = deletedChill.some(d => d.toLowerCase() === def.name.toLowerCase());
+                        if (!alreadyExists && !isDeleted) {
+                            chillGames.push(def);
                         }
                     });
+                } else {
+                    chillGames = DEFAULT_CHILL.filter(def =>
+                        !deletedChill.some(d => d.toLowerCase() === def.name.toLowerCase())
+                    );
                 }
 
-                // 3. Favorileri yükle
-                if (localFav) {
-                    favoriteGames = JSON.parse(localFav);
-                }
-
-                // Birleştirilmiş yeni halini tekrar kaydet
                 saveStateToLocal();
             } catch (e) {
                 console.error("LocalStorage yükleme hatası:", e);
+                allGames   = [...DEFAULT_HORROR];
+                chillGames = [...DEFAULT_CHILL];
             }
         }
 
-        function saveStateToLocal() {
-            localStorage.setItem('lib_allGames', JSON.stringify(allGames));
-            localStorage.setItem('lib_chillGames', JSON.stringify(chillGames));
-            localStorage.setItem('lib_favoriteGames', JSON.stringify(favoriteGames));
+        // ─── MANUEL KAYDET butonu ─────────────────────────────────────────────────
+        function manualSave() {
+            saveStateToLocal();
+            const btn   = document.getElementById('save-btn');
+            const label = btn.querySelector('.save-label');
+            btn.classList.add('saved');
+            label.textContent = 'Kaydedildi ✓';
+            setTimeout(() => {
+                btn.classList.remove('saved');
+                label.textContent = 'Kaydet';
+            }, 2000);
         }
 
-        // Etiket ismine göre renk sınıflarını getirme
+        // ─── YARDIMCI ────────────────────────────────────────────────────────────
         function getTagClass(tag) {
             tag = tag.toLowerCase().trim();
-            if (tag.includes('anomali')) return 'tag-anomali';
-            if (tag.includes('korku')) return 'tag-korku';
-            if (tag.includes('bulmaca')) return 'tag-bulmaca';
-            if (tag.includes('japon')) return 'tag-japon';
-            if (tag.includes('üretim')) return 'tag-üretim';
-            if (tag.includes('tıklama')) return 'tag-tıklama';
+            if (tag.includes('anomali'))             return 'tag-anomali';
+            if (tag.includes('korku'))               return 'tag-korku';
+            if (tag.includes('bulmaca'))             return 'tag-bulmaca';
+            if (tag.includes('japon'))               return 'tag-japon';
+            if (tag.includes('üretim'))              return 'tag-üretim';
+            if (tag.includes('tıklama'))             return 'tag-tıklama';
             if (tag.includes('ev yap') || tag.includes('ev')) return 'tag-ev';
             return 'tag-default';
         }
 
-        // Oyun listesini ekrana basma (Dinamik render yapısı)
+        // ─── RENDER ──────────────────────────────────────────────────────────────
         function renderGames() {
             const container = document.getElementById('game-container');
             container.innerHTML = '';
+            const list = (currentTab === 'horror') ? allGames : chillGames;
 
-            const listToRender = (currentTab === 'horror') ? allGames : chillGames;
+            list.forEach((game, index) => {
+                const isFavorite = favoriteGames.some(f => f.toLowerCase() === game.name.toLowerCase());
 
-            listToRender.forEach((game, index) => {
-                const isFavorite = favoriteGames.some(fav => fav.toLowerCase() === game.name.toLowerCase());
-                
-                // Resim adresi kontrolü. Yoksa SteamId şablonuyla çekilir.
                 let gameImg = game.image || game.img || '';
                 if (!gameImg && game.steamId) {
                     gameImg = `https://cdn.akamai.steamstatic.com/steam/apps/${game.steamId}/header.jpg`;
                 }
 
-                // Etiketlerin derlenmesi
                 let tagsArray = [];
-                if (game.type) {
-                    tagsArray = game.type.split(',').map(t => t.trim());
-                } else if (game.tags) {
-                    tagsArray = game.tags;
-                }
+                if (game.type)       tagsArray = game.type.split(',').map(t => t.trim());
+                else if (game.tags)  tagsArray = game.tags;
 
-                const gamePlaytime = game.playtime || game.time || 'Süre girilmedi';
+                const playtime = game.playtime || game.time || 'Süre girilmedi';
+                const safeName = game.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
                 const card = document.createElement('div');
                 card.className = 'game-card';
@@ -790,17 +772,20 @@
 
                 card.innerHTML = `
                     <div class="image-wrapper">
-                        <div class="heart-badge" onclick="toggleFavorite('${game.name.replace(/'/g, "\\'")}', event)">
+                        <div class="heart-badge" onclick="toggleFavorite('${safeName}', event)">
                             ${isFavorite ? '❤️' : '🤍'}
                         </div>
-                        ${gameImg ? `<img src="${gameImg}" class="game-img" alt="${game.name}" onerror="this.src='https://via.placeholder.com/460x215?text=Görsel+Bulunamadı'">` : `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#555; font-size:13px; font-style:italic;">Görsel Tanımlı Değil</div>`}
+                        ${gameImg
+                            ? `<img src="${gameImg}" class="game-img" alt="${game.name}" onerror="this.src='https://via.placeholder.com/460x215?text=Görsel+Bulunamadı'">`
+                            : `<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#555;font-size:13px;font-style:italic;">Görsel Tanımlı Değil</div>`
+                        }
                     </div>
                     <div class="card-content">
                         <div>
                             <div class="game-title">${game.name}</div>
                             ${game.desc ? `<div class="game-desc">${game.desc}</div>` : ''}
                             <div class="game-meta">
-                                <span>⏱️ ${gamePlaytime}</span>
+                                <span>⏱️ ${playtime}</span>
                                 ${game.year ? `<span>📅 ${game.year}</span>` : ''}
                             </div>
                         </div>
@@ -818,34 +803,26 @@
             });
         }
 
-        // Sekmeler arası geçiş
+        // ─── TAB ─────────────────────────────────────────────────────────────────
         function switchTab(tab) {
             currentTab = tab;
             document.getElementById('tab-horror').classList.toggle('active', tab === 'horror');
             document.getElementById('tab-chill').classList.toggle('active', tab === 'chill');
-            
-            if (tab === 'chill') {
-                document.body.classList.add('chill-active');
-            } else {
-                document.body.classList.remove('chill-active');
-            }
+            document.body.classList.toggle('chill-active', tab === 'chill');
             renderGames();
         }
 
-        // Kalp durumunu değiştirme
+        // ─── FAVORİ ──────────────────────────────────────────────────────────────
         function toggleFavorite(gameName, event) {
-            if (event) event.stopPropagation(); // Kart düzenleme modalının açılmasını önle
-            const index = favoriteGames.findIndex(fav => fav.toLowerCase() === gameName.toLowerCase());
-            if (index > -1) {
-                favoriteGames.splice(index, 1);
-            } else {
-                favoriteGames.push(gameName);
-            }
+            if (event) event.stopPropagation();
+            const i = favoriteGames.findIndex(f => f.toLowerCase() === gameName.toLowerCase());
+            if (i > -1) favoriteGames.splice(i, 1);
+            else         favoriteGames.push(gameName);
             saveStateToLocal();
             renderGames();
         }
 
-        // Oyun Ekleme Modalı Kontrolleri
+        // ─── EKLEME MODALI ────────────────────────────────────────────────────────
         function openModal() {
             document.getElementById('add-modal').style.display = 'flex';
         }
@@ -856,27 +833,65 @@
             toggleFormTagsField();
         }
 
-        // Oyun Düzenleme / Detay Modalı Kontrolleri
+        function toggleFormTagsField() {
+            const cat = document.getElementById('form-category').value;
+            document.getElementById('tags-field').style.display = (cat === 'chill') ? 'block' : 'none';
+        }
+
+        function addGame(e) {
+            e.preventDefault();
+            const category = document.getElementById('form-category').value;
+            const name     = document.getElementById('form-name').value.trim();
+            const image    = document.getElementById('form-image').value.trim();
+            const steamId  = document.getElementById('form-steamid').value.trim();
+            const year     = parseInt(document.getElementById('form-year').value) || '';
+            const playtime = document.getElementById('form-playtime').value.trim();
+            const tags     = document.getElementById('form-tags').value.trim();
+            const desc     = document.getElementById('form-desc').value.trim();
+            const favorite = document.getElementById('form-favorite').checked;
+
+            if (favorite && !favoriteGames.some(f => f.toLowerCase() === name.toLowerCase())) {
+                favoriteGames.push(name);
+            }
+
+            if (category === 'horror') {
+                const g = { name, type: tags || 'Korku', playtime, desc };
+                if (steamId) g.steamId = steamId;
+                if (image)   g.image   = image;
+                if (year)    g.year    = year;
+                allGames.unshift(g);
+                // Eğer bu isim daha önce silinmişse, silinmiş listesinden çıkar
+                deletedHorror = deletedHorror.filter(d => d.toLowerCase() !== name.toLowerCase());
+            } else {
+                const g = { name, desc: desc || 'Açıklama girilmedi.', time: playtime, tags: tags ? tags.split(',').map(t => t.trim()) : ['chill'] };
+                if (image)   g.img    = image;
+                if (steamId) g.steamId = steamId;
+                if (year)    g.year    = year;
+                chillGames.unshift(g);
+                deletedChill = deletedChill.filter(d => d.toLowerCase() !== name.toLowerCase());
+            }
+
+            saveStateToLocal();
+            closeModal();
+            renderGames();
+        }
+
+        // ─── DÜZENLEME MODALI ─────────────────────────────────────────────────────
         function openEditModal(index, tab) {
             const list = (tab === 'horror') ? allGames : chillGames;
             const game = list[index];
 
-            document.getElementById('edit-index').value = index;
-            document.getElementById('edit-name').value = game.name || '';
-            document.getElementById('edit-image').value = game.image || game.img || '';
-            document.getElementById('edit-steamid').value = game.steamId || '';
-            document.getElementById('edit-year').value = game.year || '';
+            document.getElementById('edit-index').value    = index;
+            document.getElementById('edit-name').value     = game.name || '';
+            document.getElementById('edit-image').value    = game.image || game.img || '';
+            document.getElementById('edit-steamid').value  = game.steamId || '';
+            document.getElementById('edit-year').value     = game.year || '';
             document.getElementById('edit-playtime').value = game.playtime || game.time || '';
-            document.getElementById('edit-desc').value = game.desc || '';
+            document.getElementById('edit-desc').value     = game.desc || '';
 
-            // Etiketleri parse et
-            if (game.type) {
-                activeEditTags = game.type.split(',').map(t => t.trim()).filter(t => t);
-            } else if (game.tags) {
-                activeEditTags = [...game.tags];
-            } else {
-                activeEditTags = [];
-            }
+            if (game.type)       activeEditTags = game.type.split(',').map(t => t.trim()).filter(t => t);
+            else if (game.tags)  activeEditTags = [...game.tags];
+            else                 activeEditTags = [];
 
             renderEditTags();
             document.getElementById('edit-modal').style.display = 'flex';
@@ -887,35 +902,30 @@
             document.getElementById('edit-game-form').reset();
         }
 
-        // Düzenleme modalında etiketleri listeleme
         function renderEditTags() {
             const container = document.getElementById('edit-tags-container');
             container.innerHTML = '';
-            
             if (activeEditTags.length === 0) {
-                container.innerHTML = `<span style="color: #555; font-size: 13px; font-style: italic;">Henüz etiket yok.</span>`;
+                container.innerHTML = `<span style="color:#555;font-size:13px;font-style:italic;">Henüz etiket yok.</span>`;
                 return;
             }
-
-            activeEditTags.forEach((tag, index) => {
+            activeEditTags.forEach((tag, i) => {
                 const pill = document.createElement('span');
                 pill.className = 'tag-pill';
-                pill.innerHTML = `${tag.toUpperCase()} <span style="color: #ff4757; font-weight: bold; margin-left: 5px;">&times;</span>`;
-                pill.setAttribute('onclick', `removeTag(${index})`);
+                pill.innerHTML = `${tag.toUpperCase()} <span style="color:#ff4757;font-weight:bold;margin-left:5px;">&times;</span>`;
+                pill.setAttribute('onclick', `removeTag(${i})`);
                 container.appendChild(pill);
             });
         }
 
-        // Etiket Silme
         function removeTag(index) {
             activeEditTags.splice(index, 1);
             renderEditTags();
         }
 
-        // Yeni Etiket Ekleme
         function addNewTag() {
             const input = document.getElementById('new-tag-input');
-            const val = input.value.trim().toLowerCase();
+            const val   = input.value.trim().toLowerCase();
             if (val && !activeEditTags.includes(val)) {
                 activeEditTags.push(val);
                 renderEditTags();
@@ -923,40 +933,35 @@
             }
         }
 
-        // Düzenlenmiş Oyunu Kaydetme
         function saveEditedGame(e) {
             e.preventDefault();
-            const index = parseInt(document.getElementById('edit-index').value);
-            const name = document.getElementById('edit-name').value.trim();
-            const image = document.getElementById('edit-image').value.trim();
-            const steamId = document.getElementById('edit-steamid').value.trim();
-            const year = parseInt(document.getElementById('edit-year').value) || '';
+            const index    = parseInt(document.getElementById('edit-index').value);
+            const name     = document.getElementById('edit-name').value.trim();
+            const image    = document.getElementById('edit-image').value.trim();
+            const steamId  = document.getElementById('edit-steamid').value.trim();
+            const year     = parseInt(document.getElementById('edit-year').value) || '';
             const playtime = document.getElementById('edit-playtime').value.trim();
-            const desc = document.getElementById('edit-desc').value.trim();
+            const desc     = document.getElementById('edit-desc').value.trim();
 
             const list = (currentTab === 'horror') ? allGames : chillGames;
-            const originalGame = list[index];
+            const game = list[index];
 
-            // Favori listesindeki eski adını güncelle
-            const favIndex = favoriteGames.findIndex(f => f.toLowerCase() === originalGame.name.toLowerCase());
-            if (favIndex > -1) {
-                favoriteGames[favIndex] = name;
-            }
+            const favIdx = favoriteGames.findIndex(f => f.toLowerCase() === game.name.toLowerCase());
+            if (favIdx > -1) favoriteGames[favIdx] = name;
 
-            // Değerleri güncelle
-            originalGame.name = name;
-            originalGame.steamId = steamId;
-            originalGame.year = year;
-            originalGame.desc = desc;
+            game.name    = name;
+            game.steamId = steamId;
+            game.year    = year;
+            game.desc    = desc;
 
             if (currentTab === 'horror') {
-                originalGame.image = image;
-                originalGame.playtime = playtime;
-                originalGame.type = activeEditTags.join(', ');
+                game.image    = image;
+                game.playtime = playtime;
+                game.type     = activeEditTags.join(', ');
             } else {
-                originalGame.img = image;
-                originalGame.time = playtime;
-                originalGame.tags = [...activeEditTags];
+                game.img  = image;
+                game.time = playtime;
+                game.tags = [...activeEditTags];
             }
 
             saveStateToLocal();
@@ -964,71 +969,26 @@
             renderGames();
         }
 
-        function toggleFormTagsField() {
-            const category = document.getElementById('form-category').value;
-            const tagsField = document.getElementById('tags-field');
-            if (category === 'chill') {
-                tagsField.style.display = 'block';
-            } else {
-                tagsField.style.display = 'none';
-            }
-        }
-
-        // Formdan sıfırdan yeni oyun ekleme
-        function addGame(e) {
-            e.preventDefault();
-            const category = document.getElementById('form-category').value;
-            const name = document.getElementById('form-name').value.trim();
-            const image = document.getElementById('form-image').value.trim();
-            const steamId = document.getElementById('form-steamid').value.trim();
-            const year = parseInt(document.getElementById('form-year').value) || '';
-            const playtime = document.getElementById('form-playtime').value.trim();
-            const tags = document.getElementById('form-tags').value.trim();
-            const desc = document.getElementById('form-desc').value.trim();
-            const favorite = document.getElementById('form-favorite').checked;
-
-            if (favorite) {
-                if (!favoriteGames.some(fav => fav.toLowerCase() === name.toLowerCase())) {
-                    favoriteGames.push(name);
-                }
-            }
-
-            if (category === 'horror') {
-                const newHorror = {
-                    name: name,
-                    type: tags ? tags : 'Korku',
-                    playtime: playtime,
-                    desc: desc
-                };
-                if (steamId) newHorror.steamId = steamId;
-                if (image) newHorror.image = image;
-                if (year) newHorror.year = year;
-                allGames.unshift(newHorror); // Başa ekler
-            } else {
-                const newChill = {
-                    name: name,
-                    desc: desc ? desc : 'Açıklama girilmedi.',
-                    time: playtime,
-                    tags: tags ? tags.split(',').map(t => t.trim()) : ['chill']
-                };
-                if (image) newChill.img = image;
-                if (steamId) newChill.steamId = steamId;
-                if (year) newChill.year = year;
-                chillGames.unshift(newChill);
-            }
-
-            saveStateToLocal();
-            closeModal();
-            renderGames();
-        }
-
-        // Oyun silme
+        // ─── SİLME ───────────────────────────────────────────────────────────────
         function deleteGame(index, event) {
-            if (event) event.stopPropagation(); // Kart tıklama (düzenleme) eventini engelle
+            if (event) event.stopPropagation();
             if (confirm("Bu oyunu listeden kalıcı olarak silmek istiyor musun?")) {
                 if (currentTab === 'horror') {
+                    const name = allGames[index].name;
+                    // Varsayılan listede mi? Öyleyse silinmiş olarak işaretle
+                    if (DEFAULT_HORROR.some(d => d.name.toLowerCase() === name.toLowerCase())) {
+                        if (!deletedHorror.some(d => d.toLowerCase() === name.toLowerCase())) {
+                            deletedHorror.push(name);
+                        }
+                    }
                     allGames.splice(index, 1);
                 } else {
+                    const name = chillGames[index].name;
+                    if (DEFAULT_CHILL.some(d => d.name.toLowerCase() === name.toLowerCase())) {
+                        if (!deletedChill.some(d => d.toLowerCase() === name.toLowerCase())) {
+                            deletedChill.push(name);
+                        }
+                    }
                     chillGames.splice(index, 1);
                 }
                 saveStateToLocal();
@@ -1036,93 +996,72 @@
             }
         }
 
-        // 1. DIŞA AKTAR: JS Dosyası (Sana attığın formatın birebir aynısı)
+        // ─── DIŞA / İÇE AKTAR ────────────────────────────────────────────────────
         function exportToJS() {
-            let jsString = `const allGames = ${JSON.stringify(allGames, null, 2)};\n\n`;
-            jsString += `const chillGames = ${JSON.stringify(chillGames, null, 2)};\n\n`;
-            jsString += `const favoriteGames = ${JSON.stringify(favoriteGames, null, 2)};`;
-
-            triggerDownload(jsString, 'data.js', 'text/javascript');
+            let js = `const allGames = ${JSON.stringify(allGames, null, 2)};\n\n`;
+            js    += `const chillGames = ${JSON.stringify(chillGames, null, 2)};\n\n`;
+            js    += `const favoriteGames = ${JSON.stringify(favoriteGames, null, 2)};`;
+            triggerDownload(js, 'data.js', 'text/javascript');
         }
 
-        // 2. DIŞA AKTAR: Manifest (JSON Dosyası)
         function exportToManifest() {
-            const manifest = {
-                allGames: allGames,
-                chillGames: chillGames,
-                favoriteGames: favoriteGames
-            };
+            const manifest = { allGames, chillGames, favoriteGames, deletedHorror, deletedChill };
             triggerDownload(JSON.stringify(manifest, null, 2), 'manifest.json', 'application/json');
         }
 
-        // Bilgisayara dosya indirme tetikleyicisi
         function triggerDownload(content, filename, contentType) {
             const blob = new Blob([content], { type: contentType });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-            link.remove();
+            const a    = document.createElement('a');
+            a.href     = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            a.remove();
         }
 
-        // 3. İÇE AKTAR: JS veya JSON yedeğini yükleme
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 const text = e.target.result;
                 try {
                     const trimmed = text.trim();
-                    // JSON Manifest formatındaysa
                     if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
                         const parsed = JSON.parse(trimmed);
-                        if (parsed.allGames) allGames = parsed.allGames;
-                        if (parsed.chillGames) chillGames = parsed.chillGames;
+                        if (parsed.allGames)      allGames      = parsed.allGames;
+                        if (parsed.chillGames)    chillGames    = parsed.chillGames;
                         if (parsed.favoriteGames) favoriteGames = parsed.favoriteGames;
-                        
+                        if (parsed.deletedHorror) deletedHorror = parsed.deletedHorror;
+                        if (parsed.deletedChill)  deletedChill  = parsed.deletedChill;
                         saveStateToLocal();
                         renderGames();
-                        alert("Manifest yedeği başarıyla yüklendi!");
+                        alert('Manifest yedeği başarıyla yüklendi!');
                     } else if (text.includes('allGames') || text.includes('chillGames')) {
-                        // Eğer gönderilen js dosyası formatı ise, veriyi güvenli bir şekilde ayrıştırmaya çalışalım
-                        const extractData = (varName) => {
-                            // Değişkeni yakalayan esnek ve güvenli regex ifadesi
-                            const regex = new RegExp('(?:const|let|var|window\\.)?\\s*' + varName + '\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*(?:;|\\r|\\n|$)');
-                            const match = text.match(regex);
-                            if (match && match[1]) {
-                                // eval veya Function yardımıyla array formatını JSON nesnesine çeviriyoruz
-                                return new Function('return ' + match[1])();
-                            }
-                            return null;
+                        const extract = (varName) => {
+                            const rx = new RegExp('(?:const|let|var|window\\.)?\\s*' + varName + '\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*(?:;|\\r|\\n|$)');
+                            const m  = text.match(rx);
+                            return m ? new Function('return ' + m[1])() : null;
                         };
-
-                        const parsedAll = extractData('allGames');
-                        const parsedChill = extractData('chillGames');
-                        const parsedFav = extractData('favoriteGames');
-
-                        if (parsedAll) allGames = parsedAll;
-                        if (parsedChill) chillGames = parsedChill;
-                        if (parsedFav) favoriteGames = parsedFav;
-
+                        const pAll  = extract('allGames');
+                        const pChill= extract('chillGames');
+                        const pFav  = extract('favoriteGames');
+                        if (pAll)   allGames      = pAll;
+                        if (pChill) chillGames    = pChill;
+                        if (pFav)   favoriteGames = pFav;
                         saveStateToLocal();
                         renderGames();
-                        alert("JS yedeği başarıyla ayrıştırıldı ve yüklendi!");
+                        alert('JS yedeği başarıyla ayrıştırıldı ve yüklendi!');
                     } else {
-                        alert("Uyumsuz dosya formatı. Lütfen sitemizden dışa aktarılan data.js veya manifest.json dosyasını yükleyin.");
+                        alert('Uyumsuz dosya formatı.');
                     }
                 } catch (err) {
-                    alert("Dosya işlenirken hata oluştu. Lütfen geçerli bir yedek dosyası seçin.");
+                    alert('Dosya işlenirken hata oluştu.');
                     console.error(err);
                 }
-                // Aynı dosya seçildiğinde tetiklenebilmesi için inputu temizliyoruz
                 event.target.value = '';
             };
             reader.readAsText(file);
         }
-
-        // İlk açılışta render
         window.onload = function() {
             loadState();
             renderGames();
