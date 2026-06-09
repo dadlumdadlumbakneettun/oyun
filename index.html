@@ -818,7 +818,7 @@
             const i = favoriteGames.findIndex(f => f.toLowerCase() === gameName.toLowerCase());
             if (i > -1) favoriteGames.splice(i, 1);
             else         favoriteGames.push(gameName);
-            saveStateToLocal();
+            markUnsaved();
             renderGames();
         }
 
@@ -1062,6 +1062,8 @@
             };
             reader.readAsText(file);
         }
+
+        // ─── BAŞLAT ───────────────────────────────────────────────────────────────
         window.onload = function() {
             loadState();
             renderGames();
